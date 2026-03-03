@@ -3,2213 +3,800 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plutonal AI — Complete System Workflow</title>
+<title>Plutonal AI — System Workflow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #070810;
-    --bg2: #0d0f1c;
-    --bg3: #111426;
-    --surface: #161929;
-    --surface2: #1c2035;
-    --border: #252a42;
-    --gold: #f0a500;
-    --gold2: #ffc84a;
-    --cyan: #00c8ff;
-    --cyan2: #60dfff;
-    --green: #00e87a;
-    --red: #ff4d6a;
-    --purple: #9b7aff;
-    --orange: #ff7a3d;
-    --text: #e8eaf0;
-    --text2: #9fa3b8;
-    --text3: #6b7094;
-    --font-head: 'Syne', sans-serif;
-    --font-mono: 'DM Mono', monospace;
-    --font-body: 'Inter', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--bg2); }
-  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
-
-  /* ── NOISE TEXTURE ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 1000;
-    background: rgba(7, 8, 16, 0.92);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
-  .nav-logo {
-    font-family: var(--font-head);
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--gold);
-    letter-spacing: -0.5px;
-    margin-right: 40px;
-    white-space: nowrap;
-  }
-
-  .nav-logo span { color: var(--text2); font-weight: 400; font-size: 13px; margin-left: 8px; }
-
-  .nav-links {
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .nav-links::-webkit-scrollbar { display: none; }
-
-  .nav-links a {
-    color: var(--text3);
-    text-decoration: none;
-    font-size: 12px;
-    font-family: var(--font-mono);
-    padding: 6px 12px;
-    border-radius: 4px;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .nav-links a:hover { color: var(--gold); background: rgba(240, 165, 0, 0.08); }
-
-  /* ── HERO ── */
-  .hero {
-    position: relative;
-    padding: 120px 32px 60px;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(240, 165, 0, 0.08);
-    border: 1px solid rgba(240, 165, 0, 0.25);
-    border-radius: 100px;
-    padding: 6px 14px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--gold2);
-    margin-bottom: 24px;
-    letter-spacing: 0.5px;
-  }
-
-  .hero-badge::before {
-    content: '';
-    width: 6px; height: 6px;
-    background: var(--gold);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  h1 {
-    font-family: var(--font-head);
-    font-size: clamp(36px, 5vw, 64px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -2px;
-    margin-bottom: 20px;
-  }
-
-  h1 .accent { color: var(--gold); }
-  h1 .dim { color: var(--text3); }
-
-  .hero-sub {
-    font-size: 16px;
-    color: var(--text2);
-    max-width: 620px;
-    line-height: 1.7;
-    margin-bottom: 40px;
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-    margin-bottom: 60px;
-  }
-
-  .stat {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .stat-val {
-    font-family: var(--font-head);
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--gold);
-  }
-
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-  }
-
-  /* ── SECTION ── */
-  section {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 60px 32px;
-    position: relative;
-  }
-
-  .section-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .section-label::before {
-    content: '';
-    width: 24px; height: 1px;
-    background: var(--text3);
-  }
-
-  h2 {
-    font-family: var(--font-head);
-    font-size: clamp(22px, 3vw, 34px);
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 8px;
-  }
-
-  .section-desc {
-    color: var(--text2);
-    font-size: 14px;
-    max-width: 640px;
-    margin-bottom: 40px;
-  }
-
-  /* ── DIVIDER ── */
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 0 32px;
-  }
-
-  /* ── PIPELINE OVERVIEW CARD ── */
-  .overview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 48px;
-  }
-
-  .overview-cell {
-    background: var(--surface);
-    padding: 20px;
-    transition: background 0.2s;
-  }
-
-  .overview-cell:hover { background: var(--surface2); }
-
-  .overview-cell-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .overview-cell-val {
-    font-family: var(--font-head);
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .overview-cell-desc {
-    font-size: 12px;
-    color: var(--text3);
-  }
-
-  /* ── MAIN FLOW PIPELINE ── */
-  .pipeline-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    position: relative;
-  }
-
-  .pipeline-wrap::before {
-    content: '';
-    position: absolute;
-    left: 31px;
-    top: 40px;
-    bottom: 40px;
-    width: 2px;
-    background: linear-gradient(180deg, var(--gold) 0%, var(--cyan) 50%, var(--green) 100%);
-    border-radius: 1px;
-    opacity: 0.3;
-  }
-
-  .pipeline-layer {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    padding: 20px 0;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .layer-dot {
-    flex-shrink: 0;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    background: var(--bg2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 2px;
-    z-index: 1;
-    transition: all 0.3s;
-    position: relative;
-    left: 22px;
-  }
-
-  .layer-dot::after {
-    content: '';
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--text3);
-    transition: all 0.3s;
-  }
-
-  .pipeline-layer:hover .layer-dot {
-    border-color: var(--gold);
-    box-shadow: 0 0 12px rgba(240, 165, 0, 0.3);
-  }
-
-  .pipeline-layer:hover .layer-dot::after { background: var(--gold); }
-
-  .layer-content {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 22px;
-    margin-left: 20px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .layer-content::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    border-radius: 3px 0 0 3px;
-  }
-
-  .pipeline-layer:hover .layer-content {
-    border-color: var(--gold);
-    background: var(--surface2);
-    box-shadow: 0 4px 24px rgba(240, 165, 0, 0.08);
-  }
-
-  .layer-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 6px;
-  }
-
-  .layer-num {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 1px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-
-  .layer-name {
-    font-family: var(--font-head);
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .layer-file {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 10px;
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .file-chip {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 4px;
-    color: var(--cyan2);
-  }
-
-  .layer-desc {
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .layer-details {
-    display: none;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-  }
-
-  .layer-details.open { display: block; }
-
-  .detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-  }
-
-  .detail-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-  }
-
-  .detail-card-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-
-  .detail-card-val {
-    font-size: 12px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-
-  .verdict-chip {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    margin: 2px;
-  }
-
-  .verdict-block { background: rgba(255, 77, 106, 0.12); color: var(--red); border: 1px solid rgba(255, 77, 106, 0.3); }
-  .verdict-reframe { background: rgba(255, 122, 61, 0.12); color: var(--orange); border: 1px solid rgba(255, 122, 61, 0.3); }
-  .verdict-proceed { background: rgba(0, 232, 122, 0.12); color: var(--green); border: 1px solid rgba(0, 232, 122, 0.3); }
-  .verdict-ready { background: rgba(0, 200, 255, 0.12); color: var(--cyan); border: 1px solid rgba(0, 200, 255, 0.3); }
-  .verdict-skip { background: rgba(155, 122, 255, 0.12); color: var(--purple); border: 1px solid rgba(155, 122, 255, 0.3); }
-  .verdict-gold { background: rgba(240, 165, 0, 0.12); color: var(--gold); border: 1px solid rgba(240, 165, 0, 0.3); }
-
-  /* layer color accents */
-  .l-gold::before { background: var(--gold); }
-  .l-red::before { background: var(--red); }
-  .l-orange::before { background: var(--orange); }
-  .l-cyan::before { background: var(--cyan); }
-  .l-purple::before { background: var(--purple); }
-  .l-green::before { background: var(--green); }
-  .l-blue::before { background: #4d8aff; }
-
-  /* ── ARROW ── */
-  .flow-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 32px;
-    margin-left: 62px;
-    position: relative;
-  }
-
-  .flow-arrow svg { opacity: 0.4; }
-
-  /* ── CRA FLOW ── */
-  .cra-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .cra-step {
-    background: var(--surface);
-    padding: 20px;
-    position: relative;
-    transition: background 0.2s;
-  }
-
-  .cra-step:hover { background: var(--surface2); }
-
-  .cra-step-num {
-    font-family: var(--font-mono);
-    font-size: 32px;
-    font-weight: 500;
-    color: var(--border);
-    line-height: 1;
-    margin-bottom: 10px;
-    letter-spacing: -2px;
-  }
-
-  .cra-step-name {
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 6px;
-  }
-
-  .cra-step-desc {
-    font-size: 12px;
-    color: var(--text3);
-    line-height: 1.5;
-  }
-
-  /* ── AGENTS GRID ── */
-  .agents-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 12px;
-  }
-
-  .agent-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-
-  .agent-card:hover {
-    border-color: var(--gold);
-    background: var(--surface2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(240, 165, 0, 0.08);
-  }
-
-  .agent-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(240, 165, 0, 0.04) 0%, transparent 60%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .agent-card:hover::after { opacity: 1; }
-
-  .agent-num {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
-
-  .agent-name {
-    font-family: var(--font-head);
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .agent-path {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--cyan2);
-    margin-bottom: 10px;
-    opacity: 0.7;
-  }
-
-  .agent-desc {
-    font-size: 12px;
-    color: var(--text3);
-    line-height: 1.5;
-  }
-
-  /* ── DATA SOURCES ── */
-  .sources-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 8px;
-  }
-
-  .source-chip {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    transition: all 0.2s;
-  }
-
-  .source-chip:hover {
-    border-color: var(--cyan);
-    background: var(--surface2);
-  }
-
-  .source-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--cyan);
-    flex-shrink: 0;
-    margin-top: 4px;
-  }
-
-  .source-name {
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 2px;
-  }
-
-  .source-desc {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text3);
-  }
-
-  /* ── SUPPORTING SYSTEMS ── */
-  .systems-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-  }
-
-  .system-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    transition: all 0.25s;
-  }
-
-  .system-card:hover {
-    border-color: var(--purple);
-    box-shadow: 0 4px 24px rgba(155, 122, 255, 0.08);
-  }
-
-  .system-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    margin-bottom: 14px;
-  }
-
-  .system-name {
-    font-family: var(--font-head);
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .system-sub {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    margin-bottom: 12px;
-  }
-
-  .system-desc {
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-
-  .system-points {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .system-points li {
-    font-size: 12px;
-    color: var(--text3);
-    padding-left: 14px;
-    position: relative;
-    line-height: 1.5;
-  }
-
-  .system-points li::before {
-    content: '›';
-    position: absolute;
-    left: 0;
-    color: var(--purple);
-  }
-
-  /* ── RESPONSE OUTPUT ── */
-  .output-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .output-header {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text3);
-  }
-
-  .output-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-  }
-
-  .output-body {
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .output-field {
-    background: var(--surface);
-    padding: 16px 18px;
-    transition: background 0.2s;
-  }
-
-  .output-field:hover { background: var(--surface2); }
-
-  .output-key {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--gold2);
-    margin-bottom: 4px;
-  }
-
-  .output-val {
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.4;
-  }
-
-  /* ── INFRA ── */
-  .infra-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .infra-table th {
-    background: var(--bg2);
-    padding: 10px 14px;
-    text-align: left;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .infra-table td {
-    padding: 10px 14px;
-    font-size: 12px;
-    color: var(--text2);
-    border-bottom: 1px solid rgba(37, 42, 66, 0.5);
-    vertical-align: top;
-  }
-
-  .infra-table tr:last-child td { border-bottom: none; }
-  .infra-table tr:hover td { background: var(--surface2); }
-
-  .infra-table td:first-child {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--cyan2);
-    white-space: nowrap;
-  }
-
-  /* ── FLOW DIAGRAM ── */
-  .flow-diagram {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px;
-    overflow-x: auto;
-    margin-bottom: 40px;
-  }
-
-  .flow-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-
-  .flow-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text);
-    white-space: nowrap;
-    transition: all 0.2s;
-  }
-
-  .flow-box:hover { border-color: var(--gold); color: var(--gold); }
-
-  .flow-box.gold { border-color: var(--gold); color: var(--gold); background: rgba(240, 165, 0, 0.05); }
-  .flow-box.red { border-color: var(--red); color: var(--red); background: rgba(255, 77, 106, 0.05); }
-  .flow-box.green { border-color: var(--green); color: var(--green); background: rgba(0, 232, 122, 0.05); }
-  .flow-box.cyan { border-color: var(--cyan); color: var(--cyan); background: rgba(0, 200, 255, 0.05); }
-  .flow-box.purple { border-color: var(--purple); color: var(--purple); background: rgba(155, 122, 255, 0.05); }
-  .flow-box.orange { border-color: var(--orange); color: var(--orange); background: rgba(255, 122, 61, 0.05); }
-
-  .flow-arrow-h {
-    color: var(--text3);
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .flow-branch {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border-left: 2px solid var(--border);
-    padding-left: 16px;
-    margin-left: 8px;
-  }
-
-  .flow-branch-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--text3);
-  }
-
-  .flow-branch-item::before {
-    content: '└─';
-    font-family: var(--font-mono);
-    color: var(--border);
-  }
-
-  /* ── TABS ── */
-  .tabs {
-    display: flex;
-    gap: 4px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 28px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .tabs::-webkit-scrollbar { display: none; }
-
-  .tab {
-    padding: 10px 18px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text3);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    white-space: nowrap;
-    transition: all 0.2s;
-  }
-
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* ── TOGGLE EXPAND ── */
-  .expand-btn {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text3);
-    background: none;
-    border: 1px solid var(--border);
-    padding: 3px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 8px;
-  }
-
-  .expand-btn:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px;
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  /* ── GLOW ACCENTS ── */
-  .glow-gold { color: var(--gold); text-shadow: 0 0 20px rgba(240, 165, 0, 0.4); }
-  .glow-cyan { color: var(--cyan); text-shadow: 0 0 20px rgba(0, 200, 255, 0.4); }
-
-  /* ── LEGEND ── */
-  .legend {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .legend-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-  }
-
-  /* ── PATHWAY BOX ── */
-  .pathway-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-  }
-
-  .pathway-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-  }
-
-  .pathway-name {
-    font-family: var(--font-head);
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--gold);
-    margin-bottom: 12px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .pathway-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .pstep {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text2);
-    padding: 4px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .pstep::before {
-    content: '→';
-    color: var(--text3);
-    flex-shrink: 0;
-  }
-
-  /* ── COMPUTATION ENGINES ── */
-  .engines-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 12px;
-  }
-
-  .engine-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px;
-    border-left: 3px solid var(--purple);
-    transition: all 0.2s;
-  }
-
-  .engine-card:hover {
-    background: var(--surface2);
-    box-shadow: 0 4px 20px rgba(155, 122, 255, 0.08);
-  }
-
-  .engine-name {
-    font-family: var(--font-head);
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--purple);
-    margin-bottom: 6px;
-  }
-
-  .engine-lib {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
-
-  .engine-desc {
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.5;
-  }
-
-  /* ── CACHE TABLE ── */
-  .cache-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 10px;
-  }
-
-  .cache-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .cache-key {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--cyan2);
-    margin-bottom: 4px;
-  }
-
-  .cache-ttl {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--gold);
-  }
-
-  .cache-desc {
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  /* ── STICKY SECTION HEADER ── */
-  .sticky-head {
-    position: sticky;
-    top: 56px;
-    background: rgba(7, 8, 16, 0.95);
-    backdrop-filter: blur(20px);
-    padding: 16px 0 12px;
-    z-index: 50;
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* responsive */
-  @media (max-width: 768px) {
-    .nav-logo span { display: none; }
-    section { padding: 40px 16px; }
-    .hero { padding: 100px 16px 40px; }
-    .pipeline-wrap::before { display: none; }
-  }
-
-  /* ── ANIMATE IN ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .fade-up {
-    opacity: 0;
-    animation: fadeUp 0.5s ease forwards;
-  }
-
-  .fade-up:nth-child(1) { animation-delay: 0.05s; }
-  .fade-up:nth-child(2) { animation-delay: 0.1s; }
-  .fade-up:nth-child(3) { animation-delay: 0.15s; }
-  .fade-up:nth-child(4) { animation-delay: 0.2s; }
-  .fade-up:nth-child(5) { animation-delay: 0.25s; }
-  .fade-up:nth-child(6) { animation-delay: 0.3s; }
-  .fade-up:nth-child(7) { animation-delay: 0.35s; }
-  .fade-up:nth-child(8) { animation-delay: 0.4s; }
-  .fade-up:nth-child(9) { animation-delay: 0.45s; }
-
-  /* highlight box */
-  .highlight-box {
-    background: rgba(240, 165, 0, 0.04);
-    border: 1px solid rgba(240, 165, 0, 0.15);
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .highlight-box strong { color: var(--gold); }
-
-  /* inline mono */
-  code {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 1px 5px;
-    border-radius: 3px;
-    color: var(--cyan2);
-  }
-
-  /* top-level flow line */
-  .top-flow {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-    overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--bg2);
-    margin-bottom: 40px;
-  }
-
-  .tf-item {
-    flex: 1;
-    min-width: 80px;
-    padding: 14px 10px;
-    text-align: center;
-    border-right: 1px solid var(--border);
-    position: relative;
-    transition: background 0.2s;
-    cursor: default;
-  }
-
-  .tf-item:last-child { border-right: none; }
-  .tf-item:hover { background: var(--surface); }
-
-  .tf-layer {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--text3);
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-
-  .tf-name {
-    font-family: var(--font-head);
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text2);
-    line-height: 1.3;
-  }
-
-  .tf-item.active-layer .tf-name { color: var(--gold); }
-
-  .tf-arrow {
-    position: absolute;
-    right: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    color: var(--text3);
-    font-size: 14px;
-  }
-
+:root {
+  --white: #ffffff;
+  --bg: #F4F6FA;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --blue-mid: #DBEAFE;
+  --green: #16A34A;
+  --green-light: #F0FDF4;
+  --green-mid: #DCFCE7;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+  --amber-mid: #FEF3C7;
+  --purple: #7C3AED;
+  --purple-light: #F5F3FF;
+  --purple-mid: #EDE9FE;
+  --red: #DC2626;
+  --red-light: #FEF2F2;
+  --red-mid: #FEE2E2;
+  --teal: #0891B2;
+  --teal-light: #ECFEFF;
+  --teal-mid: #CFFAFE;
+  --text: #111827;
+  --text2: #374151;
+  --text3: #6B7280;
+  --text4: #9CA3AF;
+  --border: #E5E7EB;
+  --border2: #D1D5DB;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.08), 0 2px 4px -1px rgba(0,0,0,.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -2px rgba(0,0,0,.04);
+  --radius: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; }
+code { font-family:'JetBrains Mono',monospace; font-size:11.5px; background:#F3F4F6; border:1px solid var(--border2); padding:1px 6px; border-radius:4px; color:var(--blue); }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  background:rgba(255,255,255,.95); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border); height:54px;
+  display:flex; align-items:center; padding:0 28px; gap:0;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.nav-logo { font-weight:800; font-size:17px; color:var(--blue); margin-right:36px; white-space:nowrap; letter-spacing:-0.3px; }
+.nav-logo span { color:var(--text3); font-weight:400; font-size:12px; margin-left:6px; }
+.nav-links { display:flex; gap:2px; overflow-x:auto; scrollbar-width:none; }
+.nav-links::-webkit-scrollbar { display:none; }
+.nav-links a { color:var(--text3); text-decoration:none; font-size:12.5px; font-weight:500; padding:5px 11px; border-radius:6px; transition:all .15s; white-space:nowrap; }
+.nav-links a:hover { color:var(--blue); background:var(--blue-light); }
+.nav-links a.active { color:var(--blue); background:var(--blue-light); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 50%, #2563EB 100%);
+  padding: 90px 40px 60px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-inner { max-width:1300px; margin:0 auto; position:relative; z-index:1; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2);
+  border-radius:100px; padding:5px 14px; font-size:11.5px; font-weight:600;
+  color:rgba(255,255,255,.9); letter-spacing:.5px; text-transform:uppercase; margin-bottom:20px;
+}
+.hero-badge::before { content:''; width:7px; height:7px; background:#34D399; border-radius:50%; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.6; transform:scale(.85); } }
+.hero h1 { font-size:clamp(32px,4.5vw,58px); font-weight:800; letter-spacing:-1.5px; line-height:1.08; margin-bottom:18px; }
+.hero h1 span { color:#93C5FD; }
+.hero-sub { font-size:16px; color:rgba(255,255,255,.75); max-width:580px; line-height:1.7; margin-bottom:40px; }
+.hero-stats { display:flex; gap:0; flex-wrap:wrap; }
+.hero-stat { text-align:center; padding:16px 28px; background:rgba(255,255,255,.1); border-right:1px solid rgba(255,255,255,.12); }
+.hero-stat:last-child { border-right:none; }
+.hero-stat-val { font-size:28px; font-weight:800; color:white; line-height:1; margin-bottom:4px; }
+.hero-stat-label { font-size:11px; color:rgba(255,255,255,.6); font-weight:500; text-transform:uppercase; letter-spacing:.5px; }
+
+/* ── PIPELINE FLOW BAR ── */
+.flow-bar { background:white; border-bottom:1px solid var(--border); overflow-x:auto; }
+.flow-bar-inner { max-width:1300px; margin:0 auto; display:flex; align-items:stretch; }
+.fb-item { flex:1; min-width:82px; padding:12px 8px; text-align:center; border-right:1px solid var(--border); transition:background .15s; position:relative; }
+.fb-item:last-child { border-right:none; }
+.fb-item:hover { background:var(--blue-light); }
+.fb-layer { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--text4); letter-spacing:.5px; margin-bottom:4px; }
+.fb-name { font-size:10.5px; font-weight:600; color:var(--text2); line-height:1.3; }
+.fb-item.fb-active .fb-layer { color:var(--blue); }
+.fb-item.fb-active .fb-name { color:var(--blue); }
+.fb-item.fb-active { background:var(--blue-light); }
+
+/* ── SECTION ── */
+section { max-width:1300px; margin:0 auto; padding:56px 40px; }
+.section-wrap { background:var(--bg); }
+.section-alt { background:white; }
+.section-inner { max-width:1300px; margin:0 auto; padding:56px 40px; }
+.s-label { font-size:11px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.s-label::before { content:''; width:20px; height:2px; background:var(--blue); border-radius:1px; }
+h2 { font-size:clamp(22px,2.5vw,30px); font-weight:800; letter-spacing:-.8px; color:var(--text); margin-bottom:8px; }
+.s-desc { font-size:14px; color:var(--text3); max-width:620px; line-height:1.7; margin-bottom:36px; }
+.divider { height:1px; background:var(--border); }
+
+/* ── OVERVIEW CARDS ── */
+.overview-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-bottom:40px; }
+.ov-card { background:white; border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); transition:box-shadow .2s; }
+.ov-card:hover { box-shadow:var(--shadow-md); }
+.ov-label { font-size:10.5px; font-weight:700; color:var(--text4); text-transform:uppercase; letter-spacing:.8px; margin-bottom:6px; }
+.ov-val { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.ov-desc { font-size:12px; color:var(--text3); line-height:1.5; }
+
+/* ── PIPELINE ── */
+.pipeline-list { display:flex; flex-direction:column; gap:0; position:relative; }
+.pipeline-list::before { content:''; position:absolute; left:26px; top:30px; bottom:30px; width:2px; background:linear-gradient(180deg,var(--blue) 0%,var(--purple) 50%,var(--green) 100%); border-radius:1px; }
+.pl-item { display:flex; align-items:flex-start; gap:18px; cursor:pointer; }
+.pl-dot-wrap { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:0; z-index:1; padding-top:18px; }
+.pl-dot { width:14px; height:14px; border-radius:50%; border:2.5px solid white; box-shadow:0 0 0 2px currentColor; flex-shrink:0; }
+.pl-connector { width:2px; flex:1; min-height:16px; background:var(--border2); }
+.pl-card { flex:1; background:white; border:1.5px solid var(--border); border-radius:var(--radius); margin:10px 0; box-shadow:var(--shadow); transition:all .2s; overflow:hidden; }
+.pl-card:hover { box-shadow:var(--shadow-md); border-color:var(--border2); }
+.pl-card.open { border-color: #93C5FD; box-shadow:0 0 0 3px rgba(37,99,235,.08), var(--shadow-md); }
+.pl-top { padding:16px 20px; display:flex; align-items:flex-start; gap:14px; }
+.pl-badge { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; padding:3px 8px; border-radius:5px; white-space:nowrap; flex-shrink:0; margin-top:2px; }
+.pl-body { flex:1; }
+.pl-name { font-size:15px; font-weight:700; color:var(--text); margin-bottom:5px; }
+.pl-files { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.pl-file { font-family:'JetBrains Mono',monospace; font-size:10.5px; background:var(--blue-light); color:var(--blue); padding:2px 8px; border-radius:4px; border:1px solid var(--blue-mid); }
+.pl-desc { font-size:13px; color:var(--text2); line-height:1.6; }
+.pl-expand { font-size:11px; font-weight:600; color:var(--blue); padding:6px 20px; border-top:1px solid var(--border); background:var(--bg); cursor:pointer; border:none; width:100%; text-align:left; display:flex; align-items:center; gap:6px; transition:background .15s; }
+.pl-expand:hover { background:#EFF6FF; }
+.pl-details { display:none; padding:16px 20px; border-top:1px solid var(--border); background:#FAFAFA; }
+.pl-details.open { display:block; }
+.detail-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; }
+.dc { background:white; border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+.dc-label { font-size:10px; font-weight:700; color:var(--text4); text-transform:uppercase; letter-spacing:.8px; margin-bottom:5px; }
+.dc-val { font-size:12.5px; color:var(--text2); line-height:1.55; }
+.verdict { display:inline-flex; align-items:center; font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; margin:2px; text-transform:uppercase; letter-spacing:.5px; }
+.v-block { background:var(--red-mid); color:var(--red); }
+.v-reframe { background:var(--amber-mid); color:var(--amber); }
+.v-proceed { background:var(--green-mid); color:var(--green); }
+
+/* color variants for pipeline */
+.c-blue  { color:var(--blue); }  .bg-blue  { background:var(--blue-light);  color:var(--blue);  border-color:var(--blue-mid); }
+.c-red   { color:var(--red); }   .bg-red   { background:var(--red-light);   color:var(--red);   border-color:var(--red-mid); }
+.c-amber { color:var(--amber); } .bg-amber { background:var(--amber-light); color:var(--amber); border-color:var(--amber-mid); }
+.c-teal  { color:var(--teal); }  .bg-teal  { background:var(--teal-light);  color:var(--teal);  border-color:var(--teal-mid); }
+.c-purple{ color:var(--purple);} .bg-purple{ background:var(--purple-light);color:var(--purple);border-color:var(--purple-mid);}
+.c-green { color:var(--green); } .bg-green { background:var(--green-light); color:var(--green); border-color:var(--green-mid); }
+
+/* ── CRA STEPS ── */
+.cra-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; margin-bottom:28px; }
+.cra-step { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow); transition:all .2s; }
+.cra-step:hover { border-color:#93C5FD; box-shadow:var(--shadow-md); }
+.cra-num { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--blue); margin-bottom:5px; }
+.cra-name { font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.cra-desc { font-size:11.5px; color:var(--text3); line-height:1.5; }
+
+/* ── AGENTS ── */
+.agents-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; }
+.agent-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); transition:all .2s; }
+.agent-card:hover { border-color:#A78BFA; box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.agent-num { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; color:var(--purple); text-transform:uppercase; margin-bottom:4px; }
+.agent-name { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.agent-path { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text4); margin-bottom:8px; }
+.agent-desc { font-size:12px; color:var(--text3); line-height:1.55; }
+
+/* ── ENGINES ── */
+.engines-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
+.engine-card { background:white; border:1.5px solid var(--purple-mid); border-left:4px solid var(--purple); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); transition:all .2s; }
+.engine-card:hover { box-shadow:var(--shadow-md); border-color:var(--purple); }
+.engine-name { font-size:14px; font-weight:700; color:var(--purple); margin-bottom:4px; }
+.engine-lib { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text4); margin-bottom:8px; background:var(--purple-light); padding:2px 8px; border-radius:4px; display:inline-block; }
+.engine-desc { font-size:12.5px; color:var(--text2); line-height:1.55; }
+
+/* ── SOURCES TABS ── */
+.tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px; overflow-x:auto; scrollbar-width:none; }
+.tabs::-webkit-scrollbar { display:none; }
+.tab { padding:10px 20px; font-size:13px; font-weight:600; color:var(--text3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; white-space:nowrap; transition:all .15s; }
+.tab:hover { color:var(--blue); }
+.tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+.sources-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; }
+.source-chip { background:white; border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; display:flex; align-items:flex-start; gap:10px; box-shadow:var(--shadow); transition:all .2s; }
+.source-chip:hover { border-color:var(--border2); box-shadow:var(--shadow-md); }
+.src-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.src-name { font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.src-desc { font-size:11.5px; color:var(--text3); line-height:1.45; }
+
+/* ── INFRA TABLE ── */
+.infra-table { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+.infra-table thead tr { background:var(--bg); }
+.infra-table th { padding:10px 14px; text-align:left; font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.7px; border-bottom:1px solid var(--border); }
+.infra-table td { padding:10px 14px; font-size:12.5px; color:var(--text2); border-bottom:1px solid var(--border); vertical-align:top; }
+.infra-table tr:last-child td { border-bottom:none; }
+.infra-table tbody tr:hover td { background:var(--blue-light); }
+.infra-table td:first-child { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--teal); font-weight:500; }
+.infra-table td:nth-child(3) { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text3); }
+
+/* ── SYSTEMS ── */
+.systems-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:14px; }
+.sys-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow); transition:all .2s; }
+.sys-card:hover { border-color:#A78BFA; box-shadow:var(--shadow-md); }
+
+.sys-name { font-size:17px; font-weight:800; color:var(--text); margin-bottom:2px; }
+.sys-sub { font-size:11px; font-weight:600; color:var(--text4); text-transform:uppercase; letter-spacing:.5px; margin-bottom:10px; }
+.sys-desc { font-size:12.5px; color:var(--text2); line-height:1.6; margin-bottom:12px; }
+.sys-points { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.sys-points li { font-size:12px; color:var(--text3); padding-left:14px; position:relative; line-height:1.5; }
+.sys-points li::before { content:'›'; position:absolute; left:0; color:var(--purple); font-weight:700; }
+
+/* ── PATHWAYS ── */
+.pw-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:12px; }
+.pw-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow); }
+.pw-name { font-size:13.5px; font-weight:700; color:var(--blue); margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+.pw-steps { display:flex; flex-direction:column; gap:3px; }
+.pw-step { font-size:11.5px; color:var(--text3); padding-left:14px; position:relative; line-height:1.55; }
+.pw-step::before { content:'→'; position:absolute; left:0; color:var(--blue); font-size:10px; top:1px; }
+
+/* ── RESPONSE OUTPUT ── */
+.output-window { background:white; border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-md); }
+.output-bar { background:#1F2937; padding:12px 18px; display:flex; align-items:center; gap:8px; }
+.output-bar-dot { width:10px; height:10px; border-radius:50%; }
+.output-bar-title { font-family:'JetBrains Mono',monospace; font-size:12px; color:#9CA3AF; margin-left:8px; }
+.output-fields { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:0; }
+.output-fields { background:var(--border); gap:1px; }
+.of { background:white; padding:14px 16px; transition:background .15s; }
+.of:hover { background:var(--blue-light); }
+.of-key { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; color:var(--blue); margin-bottom:4px; }
+.of-val { font-size:12px; color:var(--text2); line-height:1.4; }
+
+/* ── CACHE GRID ── */
+.cache-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:10px; }
+.cache-item { background:white; border:1px solid var(--border); border-radius:8px; padding:14px 16px; box-shadow:var(--shadow); }
+.cache-key { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--teal); font-weight:500; margin-bottom:4px; }
+.cache-ttl { font-size:11.5px; font-weight:600; color:var(--amber); margin-bottom:4px; }
+.cache-desc { font-size:11.5px; color:var(--text3); }
+
+/* ── HIGHLIGHT BOX ── */
+.hbox { background:var(--amber-light); border:1.5px solid var(--amber-mid); border-radius:var(--radius); padding:14px 18px; margin-bottom:18px; font-size:13px; color:var(--text2); line-height:1.65; }
+.hbox strong { color:var(--amber); }
+.hbox.blue { background:var(--blue-light); border-color:var(--blue-mid); }
+.hbox.blue strong { color:var(--blue); }
+.hbox.green { background:var(--green-light); border-color:var(--green-mid); }
+.hbox.green strong { color:var(--green); }
+
+/* ── LEGEND ── */
+.legend { display:flex; gap:18px; flex-wrap:wrap; margin-bottom:22px; }
+.leg-item { display:flex; align-items:center; gap:7px; font-size:12px; font-weight:500; color:var(--text3); }
+.leg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* ── FOOTER ── */
+footer { background:#1E3A8A; color:rgba(255,255,255,.7); text-align:center; padding:28px 40px; font-size:12px; }
+footer strong { color:white; font-size:14px; font-weight:800; display:block; margin-bottom:6px; }
+footer .ft-sub { color:rgba(255,255,255,.5); margin-top:8px; font-size:11px; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+  section, .section-inner { padding:36px 18px; }
+  .hero { padding:80px 20px 44px; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.fade-in { animation:fadeIn .4s ease forwards; }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">PLUTONAL <span>v9.4 · System Workflow</span></div>
+  <div class="nav-logo">Plutonal AI <span>v9.4 · System Workflow</span></div>
   <div class="nav-links">
     <a href="#overview">Overview</a>
-    <a href="#query-entry">Query Entry</a>
-    <a href="#pipeline">11-Layer Pipeline</a>
-    <a href="#cra">CRA Workflow</a>
-    <a href="#agents">17 Agents</a>
-    <a href="#engines">Computation</a>
-    <a href="#data">Data Sources</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#cra">CRA</a>
+    <a href="#agents">Agents</a>
+    <a href="#engines">Engines</a>
+    <a href="#data">Data</a>
     <a href="#infra">Infrastructure</a>
-    <a href="#supporting">Supporting Systems</a>
+    <a href="#systems">Systems</a>
     <a href="#pathways">Pathways</a>
-    <a href="#response">Response Output</a>
+    <a href="#response">Response</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero" id="overview">
-  <div class="hero-badge">INSTITUTIONAL RESEARCH PLATFORM · COMPUTE FIRST, CONVERSE LAST</div>
-  <h1>
-    Plutonal AI<br>
-    <span class="accent">Complete System</span><br>
-    <span class="dim">Workflow Reference</span>
-  </h1>
-  <p class="hero-sub">
-    End-to-end architecture: from raw user query through the canonical 11-layer pipeline, 
-    17 specialist agents, CRA synthesis, and unified JSON response. Every component, 
-    every decision point, every data flow — documented.
-  </p>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-val">11</span><span class="stat-label">PIPELINE LAYERS</span></div>
-    <div class="stat"><span class="stat-val">17</span><span class="stat-label">SPECIALIST AGENTS</span></div>
-    <div class="stat"><span class="stat-val">21</span><span class="stat-label">EXTERNAL APIs</span></div>
-    <div class="stat"><span class="stat-val">8</span><span class="stat-label">COMPUTE ENGINES</span></div>
-    <div class="stat"><span class="stat-val glow-cyan">&lt;3s</span><span class="stat-label">TARGET RESPONSE</span></div>
-  </div>
-
-  <!-- Quick overview grid -->
-  <div class="overview-grid">
-    <div class="overview-cell">
-      <div class="overview-cell-label">Architecture</div>
-      <div class="overview-cell-val">Compute First</div>
-      <div class="overview-cell-desc">LLMs synthesize numbers — they never generate them</div>
-    </div>
-    <div class="overview-cell">
-      <div class="overview-cell-label">Positioning</div>
-      <div class="overview-cell-val">Bloomberg + GPT</div>
-      <div class="overview-cell-desc">Institutional quantitative computation with natural language synthesis</div>
-    </div>
-    <div class="overview-cell">
-      <div class="overview-cell-label">Entry Point</div>
-      <div class="overview-cell-val">POST /api/v1/query</div>
-      <div class="overview-cell-desc">api/routes/query.py → process_query_pipeline()</div>
-    </div>
-    <div class="overview-cell">
-      <div class="overview-cell-label">Orchestrator</div>
-      <div class="overview-cell-val">PipelineOrchestrator</div>
-      <div class="overview-cell-desc">core/pipeline_orchestrator.py — master controller</div>
-    </div>
-    <div class="overview-cell">
-      <div class="overview-cell-label">Agent Brain</div>
-      <div class="overview-cell-val">CRA v7.0</div>
-      <div class="overview-cell-desc">LangGraph StateGraph — task-oriented dynamic orchestration</div>
-    </div>
-    <div class="overview-cell">
-      <div class="overview-cell-label">Cache Stack</div>
-      <div class="overview-cell-val">L1/L2/L3/L4</div>
-      <div class="overview-cell-desc">Redis + Pinecone + in-memory with 80%+ hit rate target</div>
+  <div class="hero-inner">
+    <div class="hero-badge">Institutional Research Platform · Compute First, Converse Last</div>
+    <h1>Plutonal AI<br><span>Complete System Workflow</span></h1>
+    <p class="hero-sub">End-to-end architecture: from raw user query through the canonical 11-layer pipeline, 17 specialist agents, CRA synthesis, and unified JSON response. Every component, every decision point, every data flow — documented.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">11</div><div class="hero-stat-label">Pipeline Layers</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">17</div><div class="hero-stat-label">Specialist Agents</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">21</div><div class="hero-stat-label">External APIs</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">8</div><div class="hero-stat-label">Compute Engines</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">&lt;3s</div><div class="hero-stat-label">Target Response</div></div>
     </div>
   </div>
 </div>
 
-<div class="divider"></div>
-
-<!-- QUERY ENTRY -->
-<section id="query-entry">
-  <div class="section-label">Entry Point</div>
-  <h2>How a Query Enters the System</h2>
-  <p class="section-desc">Every user request enters through the FastAPI layer, gets normalized, passes cache lookup, and enters the canonical pipeline.</p>
-
-  <div class="flow-diagram">
-    <div style="font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-bottom:20px;letter-spacing:1px;">TOP-LEVEL QUERY FLOW</div>
-
-    <div class="flow-row">
-      <div class="flow-box gold">USER QUERY</div>
-      <div class="flow-arrow-h">→</div>
-      <div class="flow-box">POST /api/v1/query</div>
-      <div class="flow-arrow-h">→</div>
-      <div class="flow-box">api/routes/query.py</div>
-      <div class="flow-arrow-h">→</div>
-      <div class="flow-box">normalize session / history</div>
-      <div class="flow-arrow-h">→</div>
-      <div class="flow-box cyan">CACHE LOOKUP (L1/L2/L4 + L3 semantic)</div>
-    </div>
-
-    <div style="margin: 16px 0 12px; font-family:var(--font-mono);font-size:10px;color:var(--text3);">Cache decision:</div>
-
-    <div class="flow-row">
-      <div class="flow-box green">CACHE HIT → return immediately</div>
-      <div style="font-size:20px;color:var(--border);padding:0 8px;">|</div>
-      <div class="flow-box orange">CACHE MISS → invoke PipelineOrchestrator.process_query()</div>
-    </div>
-
-    <div style="margin: 20px 0 12px; font-family:var(--font-mono);font-size:10px;color:var(--text3);">Pipeline output (on cache miss):</div>
-
-    <div class="flow-row">
-      <div class="flow-box gold">Structured JSON Response</div>
-      <div class="flow-arrow-h">→</div>
-      <div class="flow-box">metadata + disclaimers + confidence</div>
-      <div class="flow-arrow-h">→</div>
-      <div class="flow-box cyan">cache result (Redis) + persist conversation history</div>
-    </div>
+<!-- FLOW BAR -->
+<div class="flow-bar">
+  <div class="flow-bar-inner">
+    <div class="fb-item fb-active"><div class="fb-layer">GATE</div><div class="fb-name">Session &amp; Security</div></div>
+    <div class="fb-item"><div class="fb-layer">L1</div><div class="fb-name">Regulatory Hard Gate</div></div>
+    <div class="fb-item"><div class="fb-layer">ROUTER</div><div class="fb-name">Decision Router</div></div>
+    <div class="fb-item"><div class="fb-layer">L3</div><div class="fb-name">Market Context</div></div>
+    <div class="fb-item"><div class="fb-layer">L2</div><div class="fb-name">Query Classification</div></div>
+    <div class="fb-item"><div class="fb-layer">L3A</div><div class="fb-name">Entity Resolution</div></div>
+    <div class="fb-item"><div class="fb-layer">L4</div><div class="fb-name">Data Acquisition</div></div>
+    <div class="fb-item"><div class="fb-layer">L5</div><div class="fb-name">Retrieval Confidence</div></div>
+    <div class="fb-item"><div class="fb-layer">L6</div><div class="fb-name">Quant Computation</div></div>
+    <div class="fb-item"><div class="fb-layer">L6.5</div><div class="fb-name">Scenario Framing</div></div>
+    <div class="fb-item"><div class="fb-layer">L7</div><div class="fb-name">CRA + Agents</div></div>
+    <div class="fb-item"><div class="fb-layer">L8</div><div class="fb-name">Contradiction Engine</div></div>
+    <div class="fb-item"><div class="fb-layer">L9</div><div class="fb-name">Post-CRA Validation</div></div>
+    <div class="fb-item"><div class="fb-layer">L10</div><div class="fb-name">Response Composition</div></div>
   </div>
+</div>
 
-  <div class="highlight-box">
-    <strong>QueryRequest shape:</strong> <code>query</code>, <code>session_id</code>, <code>user_id</code>, <code>conversation_history</code>, <code>clarification_answers</code>
-    · Session and conversation history are resolved before the pipeline runs.
-    · Rate limiting, prompt-injection detection, and chat history resolution ("it" → last entity) happen at <strong>Layer 0</strong>.
-  </div>
-
-  <!-- Top flow indicator -->
-  <div class="top-flow">
-    <div class="tf-item active-layer"><div class="tf-layer">GATE</div><div class="tf-name">Session &amp; Security</div></div>
-    <div class="tf-item"><div class="tf-layer">L1</div><div class="tf-name">Regulatory Hard Gate</div></div>
-    <div class="tf-item"><div class="tf-layer">ROUTER</div><div class="tf-name">Decision Router</div></div>
-    <div class="tf-item"><div class="tf-layer">L3</div><div class="tf-name">Market Context</div></div>
-    <div class="tf-item"><div class="tf-layer">L2</div><div class="tf-name">Query Classification</div></div>
-    <div class="tf-item"><div class="tf-layer">L3A</div><div class="tf-name">Entity Resolution</div></div>
-    <div class="tf-item"><div class="tf-layer">L4</div><div class="tf-name">Data Acquisition</div></div>
-    <div class="tf-item"><div class="tf-layer">L5</div><div class="tf-name">Retrieval Confidence</div></div>
-    <div class="tf-item"><div class="tf-layer">L6</div><div class="tf-name">Quant Computation</div></div>
-    <div class="tf-item"><div class="tf-layer">L6.5</div><div class="tf-name">Scenario Framing</div></div>
-    <div class="tf-item"><div class="tf-layer">L7</div><div class="tf-name">CRA + Agents</div></div>
-    <div class="tf-item"><div class="tf-layer">L8</div><div class="tf-name">Contradiction Engine</div></div>
-    <div class="tf-item"><div class="tf-layer">L9</div><div class="tf-name">Post-CRA Validation</div></div>
-    <div class="tf-item"><div class="tf-layer">L10</div><div class="tf-name">Response Composition</div></div>
+<!-- OVERVIEW -->
+<div class="section-wrap">
+<section>
+  <div class="s-label">Architecture Overview</div>
+  <h2>System at a Glance</h2>
+  <p class="s-desc">Plutonal AI is an institutional-grade quantitative investment research platform. Numbers come only from computation engines — LLMs only synthesise and explain.</p>
+  <div class="overview-grid">
+    <div class="ov-card"><div class="ov-label">Prime Directive</div><div class="ov-val">Compute First, Converse Last</div><div class="ov-desc">All numbers originate from deterministic engines. LLMs never generate financials.</div></div>
+    <div class="ov-card"><div class="ov-label">Positioning</div><div class="ov-val">Bloomberg + GPT</div><div class="ov-desc">Quantitative like Bloomberg Terminal, synthesised like ChatGPT. Neither alone.</div></div>
+    <div class="ov-card"><div class="ov-label">Entry Point</div><div class="ov-val">POST /api/v1/query</div><div class="ov-desc">api/routes/query.py — normalize session, cache lookup, invoke PipelineOrchestrator</div></div>
+    <div class="ov-card"><div class="ov-label">Orchestrator</div><div class="ov-val">PipelineOrchestrator</div><div class="ov-desc">core/pipeline_orchestrator.py — owns L0–L6 and L8–L10. CRA owns only L7.</div></div>
+    <div class="ov-card"><div class="ov-label">Agent Brain</div><div class="ov-val">CRA v7.0</div><div class="ov-desc">LangGraph StateGraph. 12-node flow. Task-driven dynamic agent selection.</div></div>
+    <div class="ov-card"><div class="ov-label">Cache Stack</div><div class="ov-val">L0→L1→L2→L3→L4</div><div class="ov-desc">In-memory → Redis → Pinecone → Semantic → PostgreSQL. 80%+ hit target.</div></div>
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- PIPELINE -->
+<div class="section-alt">
 <section id="pipeline">
-  <div class="section-label">Core Architecture</div>
+  <div class="s-label">Core Architecture</div>
   <h2>Canonical 11-Layer Pipeline</h2>
-  <p class="section-desc">Every query traverses these layers in strict order. No layer can be skipped. Each layer has a defined input, process, and output contract. Click any layer to expand details.</p>
+  <p class="s-desc">Every query traverses these layers in strict order. Each layer has a defined input, process, and output contract. Click any layer to expand full details.</p>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Security / Session</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Regulatory</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>Routing / Classification</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>Data / Context</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>Computation / Agents</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Validation / Output</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--blue)"></div>Security / Session</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--red)"></div>Regulatory</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--amber)"></div>Routing / Classification</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--teal)"></div>Data / Context</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--purple)"></div>Computation / Agents</div>
+    <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Validation / Output</div>
   </div>
 
-  <div class="pipeline-wrap">
+  <div class="pipeline-list">
 
     <!-- L0 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-gold">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 0</span>
-          <span class="layer-name">Session &amp; Security Gate</span>
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-blue" style="box-shadow:0 0 0 2px var(--blue)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-blue">LAYER 0</span>
+          <div class="pl-body">
+            <div class="pl-name">Session &amp; Security Gate</div>
+            <div class="pl-files"><span class="pl-file">core/session_gate.py</span></div>
+            <div class="pl-desc">Rate limiting, prompt-injection detection, chat history resolution ("it" → last entity), clarification state loading, auth validation. Block on rate limit / injection → immediate return.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/session_gate.py</span>
-        </div>
-        <div class="layer-desc">Rate limiting, prompt-injection detection, chat history resolution ("it" → last entity), clarification state loading. If blocked → return immediately.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">INPUT</div>
-              <div class="detail-card-val">query, session_id, user_id, conversation_history</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">SessionGateResult: proceed, resolved_query, prior_clarifications</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">KEY OPERATIONS</div>
-              <div class="detail-card-val">Auth, rate limits, pronoun resolution, clarification state restore, injection check</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">EARLY EXIT</div>
-              <div class="detail-card-val"><span class="verdict-chip verdict-block">BLOCKED</span> → return immediately, no pipeline</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">LATENCY TARGET</div>
-              <div class="detail-card-val">&lt; 50ms (programmatic, no LLM)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">KEY FUNCTIONS</div>
-              <div class="detail-card-val">trim_conversation_history_for_llm(), assert_required_clarifications_resolved(), get_session_gate()</div>
-            </div>
+            <div class="dc"><div class="dc-label">Input</div><div class="dc-val">query, session_id, user_id, conversation_history</div></div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">SessionGateResult: proceed, resolved_query, prior_clarifications</div></div>
+            <div class="dc"><div class="dc-label">Key Operations</div><div class="dc-val">Auth, rate limits, pronoun resolution, clarification state restore, injection check</div></div>
+            <div class="dc"><div class="dc-label">Early Exit</div><div class="dc-val"><span class="verdict v-block">BLOCKED</span> → return immediately, no pipeline</div></div>
+            <div class="dc"><div class="dc-label">Latency Target</div><div class="dc-val">&lt; 50ms — programmatic, no LLM</div></div>
+            <div class="dc"><div class="dc-label">Key Functions</div><div class="dc-val">trim_conversation_history_for_llm(), assert_required_clarifications_resolved(), get_session_gate()</div></div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
 
     <!-- L1 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-red">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 1</span>
-          <span class="layer-name">Regulatory Hard Gate</span>
-        </div>
-        <div class="layer-file">
-          <span class="file-chip">core/regulatory_gate.py</span>
-          <span class="file-chip">core/language_sanitizer.py</span>
-        </div>
-        <div class="layer-desc">Risk scoring (1–5), jurisdiction detection, BLOCK / REFRAME / PROCEED verdict. BLOCK returns educational response. REFRAME rewrites query with language constraints and continues pipeline.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
-          <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">INPUT</div>
-              <div class="detail-card-val">effective_query, session_context</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">RegulatoryGateResult: verdict, risk_score (1–5), reframed_query, disclaimers, jurisdiction</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">VERDICTS</div>
-              <div class="detail-card-val">
-                <span class="verdict-chip verdict-block">BLOCK</span>
-                <span class="verdict-chip verdict-reframe">REFRAME</span>
-                <span class="verdict-chip verdict-proceed">PROCEED</span>
-              </div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">RISK SCORING</div>
-              <div class="detail-card-val">Level 1 (Safe/Educational) → Level 5 (CRITICAL: personalized invest advice). Dual: regex + LLM classification</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">REFRAME BEHAVIOR</div>
-              <div class="detail-card-val">safe_query = reframed_query; pipeline continues with language_constraints applied at L10</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">BLOCK BEHAVIOR</div>
-              <div class="detail-card-val">Returns educational message immediately. L2–L10 never run.</div>
-            </div>
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-red" style="box-shadow:0 0 0 2px var(--red)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-red">LAYER 1</span>
+          <div class="pl-body">
+            <div class="pl-name">Regulatory Hard Gate</div>
+            <div class="pl-files"><span class="pl-file">core/regulatory_gate.py</span><span class="pl-file">core/language_sanitizer.py</span></div>
+            <div class="pl-desc">Risk scoring (1–5), jurisdiction detection, BLOCK / REFRAME / PROCEED verdict. BLOCK returns educational response immediately. REFRAME rewrites query with language constraints and continues pipeline.</div>
           </div>
-          <div style="margin-top:12px;font-size:12px;color:var(--text3);">Language sanitization rules applied to ALL final output: prohibited phrases replaced (e.g. "you should buy" → "analysis indicates").</div>
+        </div>
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
+          <div class="detail-grid">
+            <div class="dc"><div class="dc-label">Input</div><div class="dc-val">effective_query, session_context</div></div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">RegulatoryGateResult: verdict, risk_score (1–5), reframed_query, disclaimers, jurisdiction</div></div>
+            <div class="dc"><div class="dc-label">Verdicts</div><div class="dc-val"><span class="verdict v-block">BLOCK</span><span class="verdict v-reframe">REFRAME</span><span class="verdict v-proceed">PROCEED</span></div></div>
+            <div class="dc"><div class="dc-label">Risk Scoring</div><div class="dc-val">Level 1 (Safe/Educational) → Level 5 (CRITICAL: personalised invest advice). Dual: regex + LLM classification</div></div>
+            <div class="dc"><div class="dc-label">REFRAME Behavior</div><div class="dc-val">safe_query = reframed_query; pipeline continues with language_constraints applied at L10</div></div>
+            <div class="dc"><div class="dc-label">BLOCK Behavior</div><div class="dc-val">Returns educational message immediately. L2–L10 never run.</div></div>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
 
     <!-- ROUTER -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-orange">
-        <div class="layer-header">
-          <span class="layer-num">ROUTER</span>
-          <span class="layer-name">Decision Router</span>
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-amber" style="box-shadow:0 0 0 2px var(--amber)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-amber">ROUTER</span>
+          <div class="pl-body">
+            <div class="pl-name">Decision Router</div>
+            <div class="pl-files"><span class="pl-file">core/decision_router.py</span></div>
+            <div class="pl-desc">LLM-driven intent routing. GREETING / TOP_NEWS / CURRENT_PRICE / FINANCIAL_EDUCATION / NON_FINANCIAL / NEEDS_CLARIFICATION / READY. Non-READY routes return early without full pipeline.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/decision_router.py</span>
-        </div>
-        <div class="layer-desc">LLM-driven intent routing. Determines GREETING / TOP_NEWS / CURRENT_PRICE / FINANCIAL_EDUCATION / NON_FINANCIAL / NEEDS_CLARIFICATION / READY. Non-READY routes return early without entering the full pipeline.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">ROUTE: GREETING / TOP_NEWS</div>
-              <div class="detail-card-val">Returns welcome + trending queries. Skips L2–L10 entirely.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">ROUTE: NON_FINANCIAL</div>
-              <div class="detail-card-val">Polite redirect with financial reframe. Skips L2–L10.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">ROUTE: NEEDS_CLARIFICATION</div>
-              <div class="detail-card-val">Return clarification questions. Client answers; next request with same session_id continues.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">ROUTE: READY</div>
-              <div class="detail-card-val"><span class="verdict-chip verdict-ready">READY</span> → Continue to L3 Market Context and beyond.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">KEY FUNCTIONS</div>
-              <div class="detail-card-val">_classify_intent_llm(), _get_trending_queries_async(), _get_trending_news_async(), _detect_confirmation_and_entity()</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">TRENDING QUERIES</div>
-              <div class="detail-card-val">Provided by core/trending_queries_manager.py for greeting/market-pulse responses</div>
-            </div>
+            <div class="dc"><div class="dc-label">GREETING / TOP_NEWS</div><div class="dc-val">Returns welcome + trending queries (core/trending_queries_manager.py). Skips L2–L10 entirely.</div></div>
+            <div class="dc"><div class="dc-label">NON_FINANCIAL</div><div class="dc-val">Polite redirect with financial reframe. Skips L2–L10.</div></div>
+            <div class="dc"><div class="dc-label">NEEDS_CLARIFICATION</div><div class="dc-val">Return clarification questions. Same session_id reuses answers in next request.</div></div>
+            <div class="dc"><div class="dc-label">READY</div><div class="dc-val">Continues to L3 Market Context. Full pipeline activated.</div></div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">RouterResult with route, trending queries, clarification questions, or redirect</div></div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
 
     <!-- L3 Market Context -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-cyan">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 3 (PRE-L2)</span>
-          <span class="layer-name">Market Context Builder</span>
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-teal" style="box-shadow:0 0 0 2px var(--teal)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-teal">LAYER 3</span>
+          <div class="pl-body">
+            <div class="pl-name">Market Context Builder</div>
+            <div class="pl-files"><span class="pl-file">core/market_context.py</span></div>
+            <div class="pl-desc">Builds immutable MarketContext: US/India/EU market hours, earnings season flag, major events (FOMC, CPI), circuit breakers, region, currency. Frozen once built, passed to L6.5, L7, and L10.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/market_context.py</span>
-        </div>
-        <div class="layer-desc">Builds immutable MarketContext: US/India/EU market hours status, earnings season flag, major scheduled events (FOMC, CPI), circuit breakers, region, currency. Injected into all downstream layers (L6.5, L7, L10).</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT FIELDS</div>
-              <div class="detail-card-val">us_market_status, india_market_status, eu_market_status, is_earnings_season, major_events_today, detected_region, detected_currency</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">IMMUTABILITY</div>
-              <div class="detail-card-val">MarketContext is frozen once built. Consistent across all downstream components in the same request.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">INJECTED INTO</div>
-              <div class="detail-card-val">L6.5 frame_scenarios(), L7 enriched_context, L10 response composition</div>
-            </div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">MarketContext object — serialized and passed downstream to L6.5, L7 enriched_context, L10 response</div></div>
+            <div class="dc"><div class="dc-label">Immutability</div><div class="dc-val">Frozen on creation — same market snapshot used consistently throughout the pipeline</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L2 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-orange">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 2</span>
-          <span class="layer-name">Query Classification</span>
+    <!-- L2 Classification -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-amber" style="box-shadow:0 0 0 2px var(--amber)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-amber">LAYER 2</span>
+          <div class="pl-body">
+            <div class="pl-name">Query Classification</div>
+            <div class="pl-files"><span class="pl-file">core/query_classifier.py</span></div>
+            <div class="pl-desc">Classifies query_type (SCREENING / SINGLE_STOCK / RESEARCH / MACRO / EDUCATIONAL / COMPOUND), subtype, complexity (SIMPLE → VERY_COMPLEX), entities, timeframe, ambiguity. COMPOUND queries split into sub-queries and pipeline runs per sub-query.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/query_classifier.py</span>
-        </div>
-        <div class="layer-desc">Classifies query type (SCREENING / SINGLE_STOCK / RESEARCH / MACRO / EDUCATIONAL / COMPOUND), subtype, complexity (SIMPLE → VERY_COMPLEX), entities, timeframe, and ambiguity. Mandatory ambiguity → clarification response. Optional ambiguity → proceed with stated assumptions.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">INPUT</div>
-              <div class="detail-card-val">safe_query, conversation_history, prior_clarifications</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">ClassifiedQuery: query_type, entities, complexity, subtype, ambiguity, agent/engine hints</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">QUERY TYPES</div>
-              <div class="detail-card-val">SCREENING (technical/fundamental/multi-factor/short-squeeze), SINGLE_STOCK, RESEARCH, MARKET_INTELLIGENCE, EDUCATIONAL, COMPOUND</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">COMPLEXITY</div>
-              <div class="detail-card-val">SIMPLE (1–2s) | MODERATE (5–15s) | COMPLEX (15–30s) | VERY_COMPLEX (30–60s)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">POST-CLASSIFICATION</div>
-              <div class="detail-card-val">Pipeline cache check, survivorship bias filter applied to entities, clarification guard (assert before L4)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">COMPOUND HANDLING</div>
-              <div class="detail-card-val">Decomposes into sub-queries → pipeline run per sub-query → results merged</div>
-            </div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">ClassifiedQuery with query_type, subtype, complexity, entities[], timeframe, ambiguity, agent/engine hints</div></div>
+            <div class="dc"><div class="dc-label">Ambiguity: Mandatory</div><div class="dc-val">Block pipeline — return clarification questions to user</div></div>
+            <div class="dc"><div class="dc-label">Ambiguity: Optional</div><div class="dc-val">Proceed with stated assumptions; include in response metadata</div></div>
+            <div class="dc"><div class="dc-label">COMPOUND Handling</div><div class="dc-val">Decompose → run full pipeline per sub-query → merge results at L10</div></div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
 
     <!-- L3A Entity Resolution -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-cyan">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 3A</span>
-          <span class="layer-name">Entity Resolution</span>
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-teal" style="box-shadow:0 0 0 2px var(--teal)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-teal">LAYER 3A</span>
+          <div class="pl-body">
+            <div class="pl-name">Entity Resolution</div>
+            <div class="pl-files"><span class="pl-file">core/layer3_entity_resolver.py</span><span class="pl-file">core/entity_resolver.py</span></div>
+            <div class="pl-desc">Resolves human names to canonical tickers. "Apple" → AAPL, "Reliance" → RELIANCE.NS. Chain: LLM extraction → yFinance lookup → OpenFIGI fallback → Web search discovery. Single source of truth for all downstream.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/layer3_entity_resolver.py</span>
-          <span class="file-chip">core/entity_resolver.py</span>
-        </div>
-        <div class="layer-desc">Resolves human-readable names to canonical tickers. "Apple" → AAPL, "Reliance" → RELIANCE.NS. Single source of truth for all downstream API calls and agents. Primary: yFinance Lookup. Fallback: OpenFIGI Search API. LLM + Web Search enhanced.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">RESOLUTION CHAIN</div>
-              <div class="detail-card-val">1. LLM entity extraction → 2. yFinance lookup → 3. OpenFIGI fallback → 4. Web search discovery</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">Resolved tickers enriched into classification entities. Used by L4 and all CRA agents.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">EXCHANGE HANDLING</div>
-              <div class="detail-card-val">RELIANCE.NS (NSE) vs RELIANCE.BO (BSE); US/India/AU/EU disambiguation</div>
-            </div>
+            <div class="dc"><div class="dc-label">Resolution Chain</div><div class="dc-val">LLM extraction → yFinance lookup → OpenFIGI fallback → Web search discovery</div></div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">Resolved tickers enriched into classification entities — used by L4 API calls and all agents</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L4 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-cyan">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 4</span>
-          <span class="layer-name">Data Acquisition &amp; Validation</span>
+    <!-- L4 Data Acquisition -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-teal" style="box-shadow:0 0 0 2px var(--teal)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-teal">LAYER 4</span>
+          <div class="pl-body">
+            <div class="pl-name">Data Acquisition &amp; Validation</div>
+            <div class="pl-files"><span class="pl-file">core/api_orchestrator.py</span><span class="pl-file">core/data_validator.py</span></div>
+            <div class="pl-desc">Parallel fetch from 21 external APIs. Per-provider rate limiting via TokenBucketRateLimiter with exponential backoff. Data quality scoring 0.0–1.0 with gates: &lt;0.4 REJECT, 0.4–0.7 WARN, 0.7–0.9 ACCEPTABLE, &gt;0.9 HIGH.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/api_orchestrator.py</span>
-          <span class="file-chip">core/data_validator.py</span>
-        </div>
-        <div class="layer-desc">Parallel fetch of market data, news, macro, crypto, filings from 21 external API providers. Per-provider rate limiting via token buckets. Data validated with quality scoring (0.0–1.0). Quality gate: score &lt;0.4 = REJECTED.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">ROUTING</div>
-              <div class="detail-card-val">Routes by DataType (CRYPTO, US_STOCK, MACRO_US, INDIA_STOCK) and QueryType with fallbacks</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">RATE LIMITING</div>
-              <div class="detail-card-val">TokenBucketRateLimiter per provider, ProviderRateLimiterRegistry, exponential backoff</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">QUALITY GATES</div>
-              <div class="detail-card-val">&lt;0.40 REJECT | 0.40–0.70 WARN | 0.70–0.90 ACCEPTABLE | &gt;0.90 HIGH QUALITY</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">VALIDATION CHECKS</div>
-              <div class="detail-card-val">Price anomalies, OHLC logic, missing data gaps, restatements, negative market cap, outliers (3σ)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">KEY CLASSES</div>
-              <div class="detail-card-val">IntelligentAPIOrchestrator, ParallelExecutionEngine, LLMEndpointSelector, MacroDataCache</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">UPSTREAM DATA REUSE</div>
-              <div class="detail-card-val">L4 payload passed to CRA as upstream_data to avoid duplicate fetches at Layer 7</div>
-            </div>
+            <div class="dc"><div class="dc-label">Quality Gates</div><div class="dc-val">&lt;0.4 REJECT · 0.4–0.7 WARN · 0.7–0.9 ACCEPTABLE · &gt;0.9 HIGH</div></div>
+            <div class="dc"><div class="dc-label">Validation Checks</div><div class="dc-val">Price anomalies, OHLC logic, missing gaps, restatements, negative market cap, outliers (3σ)</div></div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">data_result with sources, quality, per-ticker scores, upstream_data (reused by CRA at L7)</div></div>
+            <div class="dc"><div class="dc-label">Routing</div><div class="dc-val">Routes by DataType (CRYPTO, US_STOCK, MACRO_US, INDIA_STOCK) and QueryType</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L5 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-cyan">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 5</span>
-          <span class="layer-name">Retrieval Confidence</span>
+    <!-- L5 Retrieval Confidence -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-teal" style="box-shadow:0 0 0 2px var(--teal)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-teal">LAYER 5</span>
+          <div class="pl-body">
+            <div class="pl-name">Retrieval Confidence Scoring</div>
+            <div class="pl-files"><span class="pl-file">core/retrieval_confidence.py</span></div>
+            <div class="pl-desc">Per-source confidence scoring: source_agreement (3 sources agree → HIGH), freshness weighting (real-time 1.0 → stale 0.3), outlier flagging (&gt;3σ). Composite score propagated through L7, L9, and L10 metadata.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/retrieval_confidence.py</span>
-        </div>
-        <div class="layer-desc">Per-source confidence scoring: source agreement (do 3 sources agree?), freshness weighting (real-time → stale), outlier flagging (&gt;3σ). Composite score attached to data_result and injected into L7 enriched_context and L10 metadata.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">SOURCE AGREEMENT</div>
-              <div class="detail-card-val">3 sources agree → HIGH | 2 agree → MEDIUM | all differ → LOW</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">FRESHNESS WEIGHTS</div>
-              <div class="detail-card-val">Real-time: 1.0 | Today: 0.9 | Yesterday: 0.7 | Last week: 0.5 | &gt;2 weeks: 0.3</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">RetrievalConfidenceResult with tags (ConfidenceTag), stored in data_result["retrieval_confidence"]</div>
-            </div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">RetrievalConfidenceResult with ConfidenceTag — attached to data_result["retrieval_confidence"]</div></div>
+            <div class="dc"><div class="dc-label">Freshness Weights</div><div class="dc-val">Real-time: 1.0 · Same day: 0.9 · 1 day: 0.7 · 7 days: 0.5 · Stale: 0.3</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L6 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-purple">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 6</span>
-          <span class="layer-name">Quantitative Computation</span>
+    <!-- L6 Computation -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-purple" style="box-shadow:0 0 0 2px var(--purple)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-purple">LAYER 6</span>
+          <div class="pl-body">
+            <div class="pl-name">Quantitative Computation — No LLMs</div>
+            <div class="pl-files"><span class="pl-file">core/computation_engine.py</span></div>
+            <div class="pl-desc">Pure NumPy/Pandas/SciPy/StatsModels. Anomaly detection runs first, then technical, fundamental, composite, statistical engines. Fully vectorised. Composite scoring: Momentum×0.30 + Trend×0.25 + Volume×0.20 + Volatility×0.15 + Pattern×0.10.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/computation_engine.py</span>
-        </div>
-        <div class="layer-desc">⚠ ABSOLUTELY NO LLMs. Pure deterministic math (NumPy/Pandas/SciPy). Technical indicators, anomaly detection, regime classification, screening, statistical analysis. All numeric outputs originate here.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">ANOMALY DETECTION</div>
-              <div class="detail-card-val">Price/volume spikes, zero volume, OHLC violations, large gaps, stale data, probable splits. Runs first.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">TECHNICAL ANALYSIS</div>
-              <div class="detail-card-val">RSI, MACD, Bollinger Bands, ATR, OBV, pivots, SMA/EMA, golden/death cross, composite signal</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">COMPOSITE SCORING</div>
-              <div class="detail-card-val">Momentum×0.30 + Trend×0.25 + Volume×0.20 + Volatility×0.15 + Pattern×0.10</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">STATISTICAL ENGINE</div>
-              <div class="detail-card-val">Regression, correlation, Granger causality, VAR, event studies (MacKinlay 1997)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">REGIME CLASSIFICATION</div>
-              <div class="detail-card-val">expansion / contraction / transition / high_volatility from price and momentum signals</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">KEY DESIGN</div>
-              <div class="detail-card-val">Fully vectorized operations across DataFrames. Never loop over individual stocks.</div>
-            </div>
+            <div class="dc"><div class="dc-label">Technical Indicators</div><div class="dc-val">RSI, MACD, Bollinger, ATR, OBV, pivots, SMA/EMA, golden/death cross, composite signal</div></div>
+            <div class="dc"><div class="dc-label">Statistical Methods</div><div class="dc-val">Regression, correlation, Granger causality, VAR, event studies (MacKinlay 1997)</div></div>
+            <div class="dc"><div class="dc-label">Regime Classification</div><div class="dc-val">expansion / contraction / transition / high_volatility</div></div>
+            <div class="dc"><div class="dc-label">Performance</div><div class="dc-val">&lt;8s for 450 stocks × 15 indicators — fully vectorised operations</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L6.5 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-orange">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 6.5</span>
-          <span class="layer-name">Scenario Framing</span>
+    <!-- L6.5 Scenario Framing -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-purple" style="box-shadow:0 0 0 2px var(--purple)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-purple">LAYER 6.5</span>
+          <div class="pl-body">
+            <div class="pl-name">Scenario Framing</div>
+            <div class="pl-files"><span class="pl-file">core/contradiction_engine.py (frame_scenarios)</span></div>
+            <div class="pl-desc">Generates Bull / Base / Bear scenario priors before synthesis. Calls frame_scenarios(computation_result, regime, market_context). Probabilities sum to 1.0. Passed to L7 enriched_context and L8 analysis.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/contradiction_engine.py</span>
-        </div>
-        <div class="layer-desc">Generates Bull / Base / Bear scenario priors before synthesis. Calls frame_scenarios() with computation_result, regime, and market_context. Output (ScenarioFrame) passed to both L7 enriched_context and L8 analyse().</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">METHOD</div>
-              <div class="detail-card-val">frame_scenarios(computation_result, regime, market_context) → ScenarioFrame</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">Bull/Base/Bear scenarios with prior probabilities that sum to 1.0</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">USED BY</div>
-              <div class="detail-card-val">L7 (as part of enriched_context for agents) and L8 (as input to full contradiction analysis)</div>
-            </div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">ScenarioFrame with prior probabilities (Bull + Base + Bear = 1.0)</div></div>
+            <div class="dc"><div class="dc-label">Downstream Usage</div><div class="dc-val">Passed to L7 enriched_context and L8 contradiction engine analyse()</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L7 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-gold">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 7 ★</span>
-          <span class="layer-name">CRA Orchestration &amp; Agent Synthesis</span>
+    <!-- L7 CRA -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-purple" style="box-shadow:0 0 0 2px var(--purple)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-purple">LAYER 7</span>
+          <div class="pl-body">
+            <div class="pl-name">CRA Orchestration &amp; Agent Synthesis</div>
+            <div class="pl-files"><span class="pl-file">agents/cra/orchestrator.py</span><span class="pl-file">core/check_agent.py</span></div>
+            <div class="pl-desc">Chief Research Agent (CRA) — LangGraph StateGraph v7.0. Task-driven dynamic selection and parallel dispatch of specialist agents. Secondary check_agent (Brave + LLM) runs concurrently and responses are arbitrated/merged.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">agents/cra/orchestrator.py</span>
-          <span class="file-chip">core/check_agent.py</span>
-        </div>
-        <div class="layer-desc">Chief Research Agent (CRA) — LangGraph StateGraph v7.0. Task-driven dynamic selection and dispatch of specialist agents. Parallel secondary check_agent (Brave search + LLM) runs concurrently. Responses arbitrated or merged.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">ENRICHED CONTEXT (IN)</div>
-              <div class="detail-card-val">classification, data_result, computation_result, safe_query, market_context (serialized), scenario_frame, retrieval_confidence, upstream_data (L4 reuse)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">CRA OUTPUT</div>
-              <div class="detail-card-val">synthesis_result: executive_summary, cra_synthesis, agent_insights, confidence, follow_up_suggestions, agents_activated</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">AGENT SELECTION</div>
-              <div class="detail-card-val">Task-planning LLM decomposes query → tasks → agent per task with specific directive. Dynamic, not static.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">PARALLEL EXECUTION</div>
-              <div class="detail-card-val">All selected agents run concurrently via asyncio.gather(). Secondary check_agent also runs in parallel.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">LANGGRAPH NODES</div>
-              <div class="detail-card-val">check_cache → parse_intent → task_planning → mandatory_api_fetch → parallel_data_fetch → parallel_agent_dispatch → validate_outputs → aggregate_results → lhis_planning → generate_output → quality_validation → compliance_validation → END</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">RAG INTEGRATION</div>
-              <div class="detail-card-val">For MEDIUM/BIG queries: multi-query RAG (HyDE + reranking) runs in parallel_data_fetch. Results in shared context for agents.</div>
-            </div>
+            <div class="dc"><div class="dc-label">Enriched Context (In)</div><div class="dc-val">classification, data_result, computation_result, safe_query, market_context, scenario_frame, retrieval_confidence, upstream_data</div></div>
+            <div class="dc"><div class="dc-label">CRA Output</div><div class="dc-val">synthesis_result: executive_summary, cra_synthesis, agent_insights, confidence, follow_up_suggestions, agents_activated</div></div>
+            <div class="dc"><div class="dc-label">Agent Selection</div><div class="dc-val">Task-planning LLM decomposes query → tasks → agent per task with specific directive. Dynamic, not static.</div></div>
+            <div class="dc"><div class="dc-label">Parallel Execution</div><div class="dc-val">All selected agents run concurrently via asyncio.gather(). check_agent also runs in parallel.</div></div>
+            <div class="dc"><div class="dc-label">LangGraph Nodes</div><div class="dc-val">check_cache → parse_intent → task_planning → mandatory_api_fetch → parallel_data_fetch → parallel_agent_dispatch → validate_outputs → aggregate_results → lhis_planning → generate_output → quality_validation → compliance_validation → END</div></div>
+            <div class="dc"><div class="dc-label">RAG Integration</div><div class="dc-val">MEDIUM/BIG queries: multi-query RAG (HyDE + reranking via Pinecone) runs in parallel_data_fetch</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L8 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-orange">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 8</span>
-          <span class="layer-name">Contradiction &amp; Scenario Engine</span>
+    <!-- L8 Contradiction -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-amber" style="box-shadow:0 0 0 2px var(--amber)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-amber">LAYER 8</span>
+          <div class="pl-body">
+            <div class="pl-name">Contradiction &amp; Scenario Engine</div>
+            <div class="pl-files"><span class="pl-file">core/contradiction_engine.py</span></div>
+            <div class="pl-desc">Analyses agent insights vs computation results and scenario frame. Detects contradictions (e.g. technical bullish vs fundamental bearish), produces final scenario probabilities (Bull/Base/Bear sum to 1.0) and agreement score.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/contradiction_engine.py</span>
-        </div>
-        <div class="layer-desc">Analyses agent insights against computation results and scenario frame. Detects contradictions (e.g. technical bullish vs fundamental bearish), produces final scenario probabilities (Bull/Base/Bear sum to 1.0), and agreement score.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">INPUT</div>
-              <div class="detail-card-val">agent_insights, computation_result, synthesis_confidence, regime, scenario_frame (from L6.5)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">OUTPUT</div>
-              <div class="detail-card-val">ContradictionResult: contradictions[], scenarios (Bull/Base/Bear), agreement score</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">KEY CLASSES</div>
-              <div class="detail-card-val">Contradiction, Scenario, ScenarioFrame, ContradictionResult, ContradictionEngine</div>
-            </div>
+            <div class="dc"><div class="dc-label">Input</div><div class="dc-val">agent_insights, computation_result, synthesis_confidence, regime, scenario_frame (from L6.5)</div></div>
+            <div class="dc"><div class="dc-label">Output</div><div class="dc-val">ContradictionResult: contradictions[], scenarios (Bull/Base/Bear), agreement score</div></div>
+            <div class="dc"><div class="dc-label">Key Classes</div><div class="dc-val">Contradiction, Scenario, ScenarioFrame, ContradictionResult, ContradictionEngine</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L9 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-green">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 9</span>
-          <span class="layer-name">Post-CRA Validation</span>
+    <!-- L9 Validation -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-green" style="box-shadow:0 0 0 2px var(--green)"></div><div class="pl-connector"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-green">LAYER 9</span>
+          <div class="pl-body">
+            <div class="pl-name">Post-CRA Validation</div>
+            <div class="pl-files"><span class="pl-file">core/pipeline_hardening.py</span></div>
+            <div class="pl-desc">Validates numeric claims in CRA text, removes placeholder text, caps confidence scores. Can hard-block output if validation fails. Generates reproducibility snapshot for full auditability.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/pipeline_hardening.py</span>
-        </div>
-        <div class="layer-desc">Validates numeric claims in CRA text, removes placeholder text, caps confidence scores, can hard-block output if validation fails. Generates reproducibility snapshot for auditability.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">KEY CLASSES</div>
-              <div class="detail-card-val">PostCRAValidator, SurvivorshipBiasFilter, EventDrivenCacheInvalidator, QueryTokenBudget, RegimeClassifier, FactorDecayAnalyzer, ConfidenceDecomposer, ReproducibilitySnapshot</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">HARD-BLOCK</div>
-              <div class="detail-card-val">If validation fails after auto-fix attempts → block output, flag for review</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">CONFIDENCE DECOMPOSITION</div>
-              <div class="detail-card-val">Breaks confidence into data quality, agent agreement, retrieval confidence, computation certainty components</div>
-            </div>
+            <div class="dc"><div class="dc-label">Key Classes</div><div class="dc-val">PostCRAValidator, SurvivorshipBiasFilter, EventDrivenCacheInvalidator, QueryTokenBudget, RegimeClassifier, FactorDecayAnalyzer, ConfidenceDecomposer, ReproducibilitySnapshot</div></div>
+            <div class="dc"><div class="dc-label">Hard-Block</div><div class="dc-val">If validation fails after auto-fix attempts → block output, flag for review</div></div>
+            <div class="dc"><div class="dc-label">Confidence Decomposition</div><div class="dc-val">Breaks into data quality, agent agreement, retrieval confidence, computation certainty</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flow-arrow"><svg width="12" height="20" viewBox="0 0 12 20"><path d="M6 0 L6 16 M1 11 L6 18 L11 11" stroke="#6b7094" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
-
-    <!-- L10 -->
-    <div class="pipeline-layer" onclick="toggleLayer(this)">
-      <div class="layer-dot"></div>
-      <div class="layer-content l-green">
-        <div class="layer-header">
-          <span class="layer-num">LAYER 10</span>
-          <span class="layer-name">Response Composition</span>
+    <!-- L10 Response -->
+    <div class="pl-item">
+      <div class="pl-dot-wrap"><div class="pl-dot c-green" style="box-shadow:0 0 0 2px var(--green)"></div></div>
+      <div class="pl-card">
+        <div class="pl-top">
+          <span class="pl-badge bg-green">LAYER 10</span>
+          <div class="pl-body">
+            <div class="pl-name">Response Composition</div>
+            <div class="pl-files"><span class="pl-file">core/pipeline_orchestrator.py (_format_response)</span></div>
+            <div class="pl-desc">Builds final unified JSON. Sanitizes output (language_constraints from L1), attaches disclaimers, calibrates confidence language via ConfidenceCalibrator. Final GPT-4o Mini compliance scan → auto-fix → re-validate → audit trail.</div>
+          </div>
         </div>
-        <div class="layer-file">
-          <span class="file-chip">core/pipeline_orchestrator.py (_format_response)</span>
-        </div>
-        <div class="layer-desc">Builds final unified JSON. Sanitizes output text (language_constraints from L1), attaches disclaimers (position: header/inline/footer), calibrates confidence language, adds scenarios, metadata, follow-up suggestions, methodology notes.</div>
-        <button class="expand-btn">▸ expand details</button>
-        <div class="layer-details">
+        <button class="pl-expand" onclick="toggleLayer(this)">▸ Expand details</button>
+        <div class="pl-details">
           <div class="detail-grid">
-            <div class="detail-card">
-              <div class="detail-card-label">KEY OUTPUT FIELDS</div>
-              <div class="detail-card-val">response_id, status, executive_summary, main_content, confidence, contradictions, scenarios, follow_up_queries, market_context, disclaimers, methodology, metadata</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">DISCLAIMER INJECTION</div>
-              <div class="detail-card-val">Conditional by query type: regulatory (header, non-dismissible), extreme risk (inline), general (footer, always)</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">CONFIDENCE CALIBRATION</div>
-              <div class="detail-card-val">core/confidence_calibration.py — CalibrationInputs → CalibrationResult. Low confidence softens language.</div>
-            </div>
-            <div class="detail-card">
-              <div class="detail-card-label">COMPLIANCE VALIDATION</div>
-              <div class="detail-card-val">Final GPT-4o Mini scan for prohibited phrases. Auto-fix → re-validate. Audit trail logged.</div>
-            </div>
+            <div class="dc"><div class="dc-label">Output Fields</div><div class="dc-val">response_id, status, executive_summary, main_content, confidence, contradictions, scenarios, follow_up_queries, market_context, disclaimers, methodology, metadata</div></div>
+            <div class="dc"><div class="dc-label">Compliance Scan</div><div class="dc-val">GPT-4o Mini scans for prohibited phrases → auto-fix → re-validate → full audit trail</div></div>
+            <div class="dc"><div class="dc-label">Streaming</div><div class="dc-val">executive_summary FIRST (&lt;3s) → data tables → detailed analysis. SSE: POST /api/v1/query/stream</div></div>
           </div>
         </div>
       </div>
     </div>
 
-  </div><!-- end pipeline-wrap -->
+  </div><!-- /pipeline-list -->
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- CRA WORKFLOW -->
+<div class="section-wrap">
 <section id="cra">
-  <div class="section-label">Layer 7 Deep Dive</div>
-  <h2>CRA — Chief Research Agent Workflow</h2>
-  <p class="section-desc">CRA is a LangGraph StateGraph (v7.0). It orchestrates all 17 specialist agents dynamically via task planning, then synthesizes their outputs into one institutional-grade executive summary.</p>
-
-  <div class="highlight-box">
-    <strong>Design principle:</strong> CRA uses task-planning LLM to decompose the query into analytical tasks and assign each to one agent with a specific directive. No static agent lists — selection is fully dynamic per query. All selected agents run in <strong>parallel</strong> via asyncio.gather().
-  </div>
+  <div class="s-label">Layer 7 · LangGraph v7.0</div>
+  <h2>CRA 12-Node Workflow</h2>
+  <p class="s-desc">The Chief Research Agent runs a fixed 12-node LangGraph StateGraph. Task planning is LLM-driven; agent selection is dynamic per query, not static. All selected agents run in parallel via asyncio.gather().</p>
 
   <div class="cra-grid">
-    <div class="cra-step">
-      <div class="cra-step-num">01</div>
-      <div class="cra-step-name">Cache Check</div>
-      <div class="cra-step-desc">If identical query is cached for this session, return immediately. Skip all subsequent nodes.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">02</div>
-      <div class="cra-step-name">Parse Intent</div>
-      <div class="cra-step-desc">LLM extracts: entities, entity types, intent, time_horizon, require_rag flag, thematic focus.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">03</div>
-      <div class="cra-step-name">Task Planning</div>
-      <div class="cra-step-desc">LLM decomposes query into tasks. Maps each task to one agent. Writes per-agent directive (e.g. "Assess RSI and MACD levels for AAPL"). Outputs: selected_agents, agent_directives, task_plan.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">04</div>
-      <div class="cra-step-name">Mandatory API Fetch</div>
-      <div class="cra-step-desc">Async fetch of price/news/macro for resolved entities. Reuses upstream_data from L4 when available to avoid duplicate calls.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">05</div>
-      <div class="cra-step-name">Parallel Data Fetch</div>
-      <div class="cra-step-desc">Web search + RAG (for MEDIUM/BIG queries) run in parallel. RAG: multi-query, HyDE, reranking via Pinecone. Results go into shared context for all agents.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">06</div>
-      <div class="cra-step-name">Parallel Agent Dispatch</div>
-      <div class="cra-step-desc">Each selected agent receives (query_id, entity, context + analytical_directive). All run concurrently. Each returns: status, confidence, findings, signal, key_metrics.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">07</div>
-      <div class="cra-step-name">Validate Outputs</div>
-      <div class="cra-step-desc">Verify each agent addressed its assigned task. Optional one recovery re-run for critical task failures. Capped to prevent latency blowup.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">08</div>
-      <div class="cra-step-name">Aggregate Results</div>
-      <div class="cra-step-desc">Merge all agent findings into aggregated_findings. Compute weighted confidence and agent_agreement score. Build aggregated_findings text for synthesis input.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">09</div>
-      <div class="cra-step-name">LHIS Planning</div>
-      <div class="cra-step-desc">Optional multi-horizon planning: Tactical (1-day) / Operational (1-month) / Strategic (1-year). Skipped for SMALL queries.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">10</div>
-      <div class="cra-step-name">Generate Output</div>
-      <div class="cra-step-desc">LLM synthesis: aggregated_findings → single institutional executive summary. Handles agreement (combine) vs disagreement (explore) vs scenarios. Generates follow_up_suggestions.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">11</div>
-      <div class="cra-step-name">Quality Validation</div>
-      <div class="cra-step-desc">GPT-4o validates numerical accuracy, tone, data usage, and that output is grounded in actual computation (not hallucinated). Used for MEDIUM/BIG queries.</div>
-    </div>
-    <div class="cra-step">
-      <div class="cra-step-num">12</div>
-      <div class="cra-step-name">Compliance Validation</div>
-      <div class="cra-step-desc">Enforces jurisdictional disclaimers. Checks prohibited phrases. Applies language_constraints from L1 Regulatory Gate. Then returns to pipeline.</div>
-    </div>
+    <div class="cra-step"><div class="cra-num">NODE 01</div><div class="cra-name">Check Cache</div><div class="cra-desc">Check Redis and semantic cache before any processing</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 02</div><div class="cra-name">Parse Intent</div><div class="cra-desc">Extract structured intent, entities, and constraints from query</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 03</div><div class="cra-name">Task Planning</div><div class="cra-desc">LLM decomposes query → tasks → assigns specific agent per task with directive</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 04</div><div class="cra-name">Mandatory API Fetch</div><div class="cra-desc">Fetches core market data required for all agent types</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 05</div><div class="cra-name">Parallel Data Fetch</div><div class="cra-desc">Supplemental data + RAG retrieval (HyDE, multi-query, reranking) for MEDIUM/BIG queries</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 06</div><div class="cra-name">Parallel Agent Dispatch</div><div class="cra-desc">All selected agents execute concurrently via asyncio.gather()</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 07</div><div class="cra-name">Validate Outputs</div><div class="cra-desc">Schema and confidence validation of all agent responses</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 08</div><div class="cra-name">Aggregate Results</div><div class="cra-desc">Merge agent findings, arbitrate contradictions, build unified insight</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 09</div><div class="cra-name">LHIS Planning</div><div class="cra-desc">Optional multi-horizon planning (skipped for SMALL queries)</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 10</div><div class="cra-name">Generate Output</div><div class="cra-desc">LLM synthesises final executive_summary, cra_synthesis, follow-up suggestions</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 11</div><div class="cra-name">Quality Validation</div><div class="cra-desc">Self-validate numeric claims, confidence calibration</div></div>
+    <div class="cra-step"><div class="cra-num">NODE 12</div><div class="cra-name">Compliance Validation</div><div class="cra-desc">Language sanitization, prohibited phrase check, disclaimer attachment</div></div>
   </div>
 
-  <div style="margin-top:24px;">
-    <div class="highlight-box">
-      <strong>Universal Agent Contract:</strong> Every agent receives <code>(query_id, entity, context)</code> where context includes <code>analytical_directive</code>, <code>price_data</code>, <code>news_data</code>, <code>macro_data</code>, <code>rag_context</code>, <code>computation_results</code>, <code>time_horizon</code>, <code>intent</code>, <code>current_date</code>, and <code>data_contract</code> rules (no fabrication, cite data). Every agent returns <code>{status, confidence, findings, signal, entity, key_metrics, ...}</code>. CRA uses <code>findings</code> for aggregation and <code>signal + confidence</code> for agreement scoring.
-    </div>
+  <div class="hbox blue">
+    <strong>Universal Agent Contract:</strong> Every agent receives <code>(query_id, entity, context with analytical_directive)</code> → returns <code>{status, confidence, findings, signal, entity, key_metrics}</code>. Shared infrastructure at <code>agents/shared/indicators.py</code>, <code>agents/shared/llm_config.py</code>, <code>agents/shared/response_builder.py</code>, <code>agents/shared/prompts.py</code>.
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- AGENTS -->
+<div class="section-alt">
 <section id="agents">
-  <div class="section-label">Specialist Intelligence</div>
+  <div class="s-label">Layer 7 · Specialist Agents</div>
   <h2>17 Specialist Agents</h2>
-  <p class="section-desc">Each agent implements domain-specific analysis. Selected dynamically by CRA task planning per query. All run in parallel with the same input/output contract.</p>
-
+  <p class="s-desc">Dynamically selected and dispatched by the CRA task planner. All agents run in parallel. Each returns a standardised response envelope with findings, signal, confidence, and key_metrics.</p>
   <div class="agents-grid">
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 01</div>
-      <div class="agent-name">Technical</div>
-      <div class="agent-path">agents/technical/agent.py</div>
-      <div class="agent-desc">Chart patterns, RSI, MACD, Bollinger Bands, ATR, OBV, support/resistance, golden/death cross. BUY/SELL/HOLD signals with composite score.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 02</div>
-      <div class="agent-name">Sentiment</div>
-      <div class="agent-path">agents/sentiment/agent.py</div>
-      <div class="agent-desc">News/social sentiment aggregation, fear/greed index, mention velocity (Reddit/Twitter), insider activity patterns, sentiment trend analysis.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 03</div>
-      <div class="agent-name">Fundamental</div>
-      <div class="agent-path">agents/fundamental/agent.py</div>
-      <div class="agent-desc">Financial statements, earnings quality, revenue/margin trends, P/E, P/B, ROE, debt/equity, peer comparison, competitive positioning.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 04</div>
-      <div class="agent-name">Quantitative</div>
-      <div class="agent-path">agents/quantitative/agent.py</div>
-      <div class="agent-desc">Factor models, alpha signals, statistical patterns in returns, institutional flow analysis, Granger causality interpretation.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 05</div>
-      <div class="agent-name">Valuation</div>
-      <div class="agent-path">agents/valuation/agent.py</div>
-      <div class="agent-desc">DCF modeling, peer multiples comparison, intrinsic value estimation, margin of safety, fair value ranges.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 06</div>
-      <div class="agent-name">Macro</div>
-      <div class="agent-path">agents/macro/agent.py</div>
-      <div class="agent-desc">Fed policy, GDP, inflation, yield curve, DXY, macro regime context, geopolitical implications. Must be specific with quantitative thresholds.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 07</div>
-      <div class="agent-name">Crypto</div>
-      <div class="agent-path">agents/crypto/agent.py</div>
-      <div class="agent-desc">Blockchain metrics, DeFi protocols, on-chain data, crypto market structure, tokenomics, exchange flows. CoinGecko integration.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 08</div>
-      <div class="agent-name">Commodities</div>
-      <div class="agent-path">agents/commodities/agent.py</div>
-      <div class="agent-desc">Gold, oil, metals, agricultural commodities, futures positioning (CFTC COT), EIA energy data, supply/demand dynamics.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 09</div>
-      <div class="agent-name">Event</div>
-      <div class="agent-path">agents/event/agent.py</div>
-      <div class="agent-desc">Earnings catalysts, FDA approvals, M&amp;A activity, corporate events. Event study analysis: abnormal returns, T0/T+1/T+5/T+20 windows.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 10</div>
-      <div class="agent-name">Historian</div>
-      <div class="agent-path">agents/historian/agent.py</div>
-      <div class="agent-desc">Historical market parallels, pattern matching across market cycles, analogous periods identification, regime context from history.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 11</div>
-      <div class="agent-name">Hypothesis</div>
-      <div class="agent-path">agents/hypothesis/agent.py</div>
-      <div class="agent-desc">What-if scenarios, investment thesis testing, scenario planning, stress-testing assumptions, alternative outcome modeling.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 12</div>
-      <div class="agent-name">Supply Chain</div>
-      <div class="agent-path">agents/supply_chain/agent.py</div>
-      <div class="agent-desc">Supply chain risks, vendor dependencies, logistics disruptions, reshoring trends, supplier concentration risk analysis.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 13</div>
-      <div class="agent-name">EdgeHead</div>
-      <div class="agent-path">agents/edgehead/agent.py</div>
-      <div class="agent-desc">Anomaly detection, edge case signals, unusual market behavior, statistical outliers, regime change early warnings.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 14</div>
-      <div class="agent-name">PulseHead</div>
-      <div class="agent-path">agents/pulsehead/agent.py</div>
-      <div class="agent-desc">Real-time market momentum, intraday pulse, short-term flow signals, microstructure analysis, live market activity.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 15</div>
-      <div class="agent-name">Governance</div>
-      <div class="agent-path">agents/governance/agent.py</div>
-      <div class="agent-desc">ESG scoring, corporate governance quality, board composition, activist investor presence, shareholder rights assessment.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 16</div>
-      <div class="agent-name">Graphing</div>
-      <div class="agent-path">agents/graphing/agent.py</div>
-      <div class="agent-desc">Chart generation and data visualization. Produces structured graph schemas (GraphType, DatasetConfig, RenderingHints) for frontend rendering.</div>
-    </div>
-    <div class="agent-card fade-up">
-      <div class="agent-num">AGENT 17</div>
-      <div class="agent-name">Statistical</div>
-      <div class="agent-path">agents/statistical/agent.py</div>
-      <div class="agent-desc">Regression, Pearson/Spearman correlation, Granger causality, VAR models, econometric tests, factor decomposition, statistical significance reporting.</div>
-    </div>
-  </div>
-
-  <div style="margin-top:24px;">
-    <div class="highlight-box">
-      <strong>Shared infrastructure:</strong> <code>agents/shared/indicators.py</code> — centralized technical indicator calculations (RSI, MACD, Bollinger, SMA, EMA, ATR, OBV) used across agents.
-      <code>agents/shared/llm_config.py</code> — centralized LLM configuration (LLMFactory, purpose-based model selection: analysis/complex/validation/fast/entity/intent).
-      <code>agents/shared/response_builder.py</code> — standardized AgentResponseBuilder for consistent output shapes.
-      <code>agents/shared/prompts.py</code> — shared prompt templates for agent analysis.
-    </div>
+    <div class="agent-card"><div class="agent-num">Agent 01</div><div class="agent-name">Technical</div><div class="agent-path">agents/technical/agent.py</div><div class="agent-desc">Chart patterns, RSI, MACD, Bollinger, ATR, OBV, support/resistance levels, composite technical signals.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 02</div><div class="agent-name">Sentiment</div><div class="agent-path">agents/sentiment/agent.py</div><div class="agent-desc">News/social sentiment, fear/greed index, mention velocity, short interest, insider activity signals.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 03</div><div class="agent-name">Fundamental</div><div class="agent-path">agents/fundamental/agent.py</div><div class="agent-desc">Financial statements, earnings quality, key ratios (P/E, P/B, ROE), peer comparison, revenue trends.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 04</div><div class="agent-name">Quantitative</div><div class="agent-path">agents/quantitative/agent.py</div><div class="agent-desc">Factor models, alpha signals, institutional flow analysis, Granger causality interpretation.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 05</div><div class="agent-name">Valuation</div><div class="agent-path">agents/valuation/agent.py</div><div class="agent-desc">DCF models, peer multiples, intrinsic value computation, fair value ranges with margin of safety.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 06</div><div class="agent-name">Macro</div><div class="agent-path">agents/macro/agent.py</div><div class="agent-desc">Fed policy, GDP, inflation, yield curve, DXY, macro regime context, geopolitical implications. Quantitative thresholds required.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 07</div><div class="agent-name">Crypto</div><div class="agent-path">agents/crypto/agent.py</div><div class="agent-desc">Blockchain metrics, DeFi protocols, on-chain data, crypto market structure, tokenomics, exchange flows.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 08</div><div class="agent-name">Commodities</div><div class="agent-path">agents/commodities/agent.py</div><div class="agent-desc">Gold, oil, metals, agricultural commodities, futures positioning (CFTC COT), EIA energy data.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 09</div><div class="agent-name">Event</div><div class="agent-path">agents/event/agent.py</div><div class="agent-desc">Earnings catalysts, FDA approvals, M&amp;A activity. Event study analysis: abnormal returns across T0/T+1/T+5/T+20 windows.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 10</div><div class="agent-name">Historian</div><div class="agent-path">agents/historian/agent.py</div><div class="agent-desc">Historical market parallels, pattern matching across market cycles, analogous period identification.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 11</div><div class="agent-name">Hypothesis</div><div class="agent-path">agents/hypothesis/agent.py</div><div class="agent-desc">What-if scenarios, investment thesis testing, scenario planning, stress-testing assumptions.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 12</div><div class="agent-name">Supply Chain</div><div class="agent-path">agents/supply_chain/agent.py</div><div class="agent-desc">Supply chain risks, vendor dependencies, logistics disruptions, reshoring trends, supplier concentration.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 13</div><div class="agent-name">EdgeHead</div><div class="agent-path">agents/edgehead/agent.py</div><div class="agent-desc">Anomaly detection, edge case signals, unusual market behaviour, regime change early warnings.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 14</div><div class="agent-name">PulseHead</div><div class="agent-path">agents/pulsehead/agent.py</div><div class="agent-desc">Real-time market momentum, intraday pulse, short-term flow signals, microstructure analysis.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 15</div><div class="agent-name">Governance</div><div class="agent-path">agents/governance/agent.py</div><div class="agent-desc">ESG scoring, corporate governance quality, board composition, activist investor presence.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 16</div><div class="agent-name">Graphing</div><div class="agent-path">agents/graphing/agent.py</div><div class="agent-desc">Chart generation. Produces structured graph schemas (GraphType, DatasetConfig, RenderingHints) for frontend.</div></div>
+    <div class="agent-card"><div class="agent-num">Agent 17</div><div class="agent-name">Statistical</div><div class="agent-path">agents/statistical/agent.py</div><div class="agent-desc">Regression, Pearson/Spearman correlation, Granger causality, VAR models, econometric tests, factor decomposition.</div></div>
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- COMPUTATION ENGINES -->
+<div class="section-wrap">
 <section id="engines">
-  <div class="section-label">Layer 6 · No LLMs</div>
+  <div class="s-label">Layer 6 · No LLMs</div>
   <h2>8 Computation Engines</h2>
-  <p class="section-desc">All numeric outputs originate here. Pure NumPy/Pandas/SciPy/StatsModels. LLMs never touch these numbers — they only explain results from these engines.</p>
-
+  <p class="s-desc">All numeric outputs originate here. Pure NumPy / Pandas / SciPy / StatsModels. LLMs never touch these numbers — they only explain results from these engines.</p>
   <div class="engines-grid">
-    <div class="engine-card">
-      <div class="engine-name">Anomaly Detection Engine</div>
-      <div class="engine-lib">scipy, scikit-learn (isolation forest)</div>
-      <div class="engine-desc">Price/volume spikes, zero volume on trading days, OHLC violations, large price gaps, stale data detection, probable stock splits. Runs first before all other engines.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Technical Screening Engine</div>
-      <div class="engine-lib">pandas, numpy, ta-lib</div>
-      <div class="engine-desc">Vectorized computation of RSI 14, MACD 12/26/9, Stochastic 14/3/3, SMA 50/200, EMA 9/21/50, ADX, Bollinger %B, OBV, A/D Line across entire stock universe. &lt;8s for 450 stocks × 15 indicators.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Fundamental Scoring Engine</div>
-      <div class="engine-lib">pandas, numpy</div>
-      <div class="engine-desc">P/E, P/B, ROE, revenue growth, margin compression, earnings quality scoring, restatement detection, industry median benchmarking, outlier detection.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Composite Screening Engine</div>
-      <div class="engine-lib">pandas, numpy, scikit-learn</div>
-      <div class="engine-desc">Multi-factor composite scoring: Valuation×0.25 + Catalyst×0.25 + Sentiment×0.25 + Macro×0.25. Normalization, z-score weighting, signal agreement percentage.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Short Squeeze Detection Engine</div>
-      <div class="engine-lib">pandas, numpy, scipy</div>
-      <div class="engine-desc">Squeeze_Score = SI×0.25 + Days-to-Cover×0.20 + Momentum×0.20 + Volume×0.15 + Options×0.10 + Borrow×0.07 + Technical×0.03. Multi-source data fusion.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Statistical Research Engine</div>
-      <div class="engine-lib">statsmodels, scipy, numpy</div>
-      <div class="engine-desc">Granger causality (F-tests, p&lt;0.05, lag 1–10), VAR models with impulse response, Pearson/Spearman correlation, rolling correlations (90-day), event studies (MacKinlay 1997), variance decomposition.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Macro Sensitivity Engine</div>
-      <div class="engine-lib">statsmodels (OLS regression)</div>
-      <div class="engine-desc">Rate beta computation, stock returns vs macro variable changes, sensitivity scores, regime-conditional regression, interest rate impact quantification.</div>
-    </div>
-    <div class="engine-card">
-      <div class="engine-name">Regime Classification Engine</div>
-      <div class="engine-lib">numpy, scipy</div>
-      <div class="engine-desc">Classifies market periods: expansion / contraction / transition / high_volatility from price momentum and macro indicators. Used by L6.5 scenario framing and L8 contradiction engine.</div>
-    </div>
+    <div class="engine-card"><div class="engine-name">Anomaly Detection</div><div class="engine-lib">scipy · scikit-learn (isolation forest)</div><div class="engine-desc">Price/volume spikes, zero volume on trading days, OHLC violations, large price gaps, stale data, probable splits. Runs first before all other engines.</div></div>
+    <div class="engine-card"><div class="engine-name">Technical Screening</div><div class="engine-lib">pandas · numpy · ta-lib</div><div class="engine-desc">Vectorised: RSI 14, MACD 12/26/9, Stochastic 14/3/3, SMA 50/200, EMA 9/21/50, ADX, Bollinger %B, OBV, A/D Line. &lt;8s for 450 stocks × 15 indicators.</div></div>
+    <div class="engine-card"><div class="engine-name">Fundamental Scoring</div><div class="engine-lib">pandas · numpy</div><div class="engine-desc">P/E, P/B, ROE, revenue growth, margin compression, earnings quality scoring, restatement detection, industry median benchmarking, outlier detection.</div></div>
+    <div class="engine-card"><div class="engine-name">Composite Screening</div><div class="engine-lib">pandas · numpy · scikit-learn</div><div class="engine-desc">Multi-factor: Valuation×0.25 + Catalyst×0.25 + Sentiment×0.25 + Macro×0.25. Normalization, z-score weighting, signal agreement percentage.</div></div>
+    <div class="engine-card"><div class="engine-name">Short Squeeze Detection</div><div class="engine-lib">pandas · numpy · scipy</div><div class="engine-desc">Squeeze_Score = SI×0.25 + Days-to-Cover×0.20 + Momentum×0.20 + Volume×0.15 + Options×0.10 + Borrow×0.07 + Technical×0.03.</div></div>
+    <div class="engine-card"><div class="engine-name">Statistical Research</div><div class="engine-lib">statsmodels · scipy · numpy</div><div class="engine-desc">Granger causality (F-tests, p&lt;0.05, lag 1–10), VAR with impulse response, rolling correlations (90-day), event studies (MacKinlay 1997).</div></div>
+    <div class="engine-card"><div class="engine-name">Macro Sensitivity</div><div class="engine-lib">statsmodels OLS regression</div><div class="engine-desc">Rate beta computation, stock returns vs macro variable changes, sensitivity scores, regime-conditional regression, interest rate impact quantification.</div></div>
+    <div class="engine-card"><div class="engine-name">Regime Classification</div><div class="engine-lib">numpy · scipy</div><div class="engine-desc">Classifies market periods: expansion / contraction / transition / high_volatility from price momentum and macro indicators. Used by L6.5 and L8.</div></div>
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- DATA SOURCES -->
+<div class="section-alt">
 <section id="data">
-  <div class="section-label">Layer 4 · External APIs</div>
+  <div class="s-label">Layer 4 · External APIs</div>
   <h2>21 External Data Providers</h2>
-  <p class="section-desc">All fetched in parallel via core/api_orchestrator.py with per-provider rate limiting, fallback chains, and Redis caching. Routes by DataType and QueryType.</p>
+  <p class="s-desc">All fetched in parallel via core/api_orchestrator.py with per-provider rate limiting (TokenBucketRateLimiter), fallback chains, and Redis caching. Routes by DataType and QueryType.</p>
 
   <div class="tabs">
     <div class="tab active" onclick="switchTab(this,'tab-market')">Market Data</div>
@@ -2220,67 +807,63 @@
 
   <div id="tab-market" class="tab-panel active">
     <div class="sources-grid">
-      <div class="source-chip"><div class="source-dot"></div><div><div class="source-name">FMP</div><div class="source-desc">Financial Modeling Prep — fundamentals, financials, price</div></div></div>
-      <div class="source-chip"><div class="source-dot"></div><div><div class="source-name">yFinance</div><div class="source-desc">Yahoo Finance — OHLCV, historical prices, metadata</div></div></div>
-      <div class="source-chip"><div class="source-dot"></div><div><div class="source-name">CoinGecko</div><div class="source-desc">Crypto prices, market caps, on-chain metadata</div></div></div>
-      <div class="source-chip"><div class="source-dot"></div><div><div class="source-name">Finlight</div><div class="source-desc">Market data API + optional WebSocket for real-time</div></div></div>
-      <div class="source-chip"><div class="source-dot"></div><div><div class="source-name">Fear &amp; Greed</div><div class="source-desc">CNN Fear &amp; Greed Index for sentiment baseline</div></div></div>
-      <div class="source-chip"><div class="source-dot"></div><div><div class="source-name">OpenFIGI</div><div class="source-desc">Instrument mapping, FIGI resolution for entity resolver</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--blue)"></div><div><div class="src-name">FMP</div><div class="src-desc">Financial Modeling Prep — fundamentals, financials, price</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--blue)"></div><div><div class="src-name">yFinance</div><div class="src-desc">Yahoo Finance — OHLCV, historical prices, metadata</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--blue)"></div><div><div class="src-name">CoinGecko</div><div class="src-desc">Crypto prices, market caps, on-chain metadata</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--blue)"></div><div><div class="src-name">Finlight</div><div class="src-desc">Market data API + optional WebSocket for real-time</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--blue)"></div><div><div class="src-name">Fear &amp; Greed</div><div class="src-desc">CNN Fear &amp; Greed Index for sentiment baseline</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--blue)"></div><div><div class="src-name">OpenFIGI</div><div class="src-desc">Instrument mapping, FIGI resolution for entity resolver</div></div></div>
     </div>
   </div>
 
   <div id="tab-macro" class="tab-panel">
     <div class="sources-grid">
-      <div class="source-chip"><div class="source-dot" style="background:var(--gold)"></div><div><div class="source-name">FRED</div><div class="source-desc">Federal Reserve — DFF, DGS10, CPIAUCSL, DFII10, T5YIE</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--gold)"></div><div><div class="source-name">RBI DBIE</div><div class="source-desc">Reserve Bank of India macro / central bank data</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--gold)"></div><div><div class="source-name">World Bank</div><div class="source-desc">Global economic indicators and development data</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--gold)"></div><div><div class="source-name">IMF</div><div class="source-desc">IMF World Economic Outlook and statistical datasets</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--gold)"></div><div><div class="source-name">OECD</div><div class="source-desc">OECD economic indicators and composite leading indicators</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--gold)"></div><div><div class="source-name">EIA</div><div class="source-desc">US Energy Information Administration — oil, gas, energy data</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--amber)"></div><div><div class="src-name">FRED</div><div class="src-desc">Federal Reserve — DFF, DGS10, CPIAUCSL, DFII10, T5YIE</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--amber)"></div><div><div class="src-name">RBI DBIE</div><div class="src-desc">Reserve Bank of India macro / central bank data</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--amber)"></div><div><div class="src-name">World Bank</div><div class="src-desc">Global economic indicators and development data</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--amber)"></div><div><div class="src-name">IMF</div><div class="src-desc">IMF World Economic Outlook and statistical datasets</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--amber)"></div><div><div class="src-name">OECD</div><div class="src-desc">OECD economic indicators and composite leading indicators</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--amber)"></div><div><div class="src-name">EIA</div><div class="src-desc">US Energy Information Administration — oil, gas, energy</div></div></div>
     </div>
   </div>
 
   <div id="tab-alt" class="tab-panel">
     <div class="sources-grid">
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">NewsAPI</div><div class="source-desc">Financial news aggregation across major sources</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">GDELT</div><div class="source-desc">Global events, news tone, geopolitical event tracking</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">Google Trends</div><div class="source-desc">Search interest trends for ticker/company names</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">Social Sentiment</div><div class="source-desc">Reddit, Twitter mention velocity and sentiment scoring</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">Mastodon</div><div class="source-desc">Decentralized social media financial signal extraction</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">Hacker News</div><div class="source-desc">Tech industry sentiment and startup/venture signals</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--purple)"></div><div><div class="source-name">Massive</div><div class="source-desc">Massive API + optional WebSocket for streaming data</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">NewsAPI</div><div class="src-desc">Financial news aggregation across major sources</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">GDELT</div><div class="src-desc">Global events, news tone, geopolitical event tracking</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">Google Trends</div><div class="src-desc">Search interest trends for ticker/company names</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">Social Sentiment</div><div class="src-desc">Reddit, Twitter mention velocity and sentiment scoring</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">Mastodon</div><div class="src-desc">Decentralized social media financial signal extraction</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">Hacker News</div><div class="src-desc">Tech industry sentiment and startup/venture signals</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--purple)"></div><div><div class="src-name">Massive</div><div class="src-desc">Massive API + optional WebSocket for streaming data</div></div></div>
     </div>
   </div>
 
   <div id="tab-broker" class="tab-panel">
     <div class="sources-grid">
-      <div class="source-chip"><div class="source-dot" style="background:var(--green)"></div><div><div class="source-name">SEC EDGAR</div><div class="source-desc">13F filings (institutional), Form 4 (insider), SEC filings</div></div></div>
-      <div class="source-chip"><div class="source-dot" style="background:var(--green)"></div><div><div class="source-name">Zerodha</div><div class="source-desc">India broker — equity data, orders, token auto-refresh via GitHub Actions</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--green)"></div><div><div class="src-name">SEC EDGAR</div><div class="src-desc">13F filings (institutional), Form 4 (insider), SEC filings</div></div></div>
+      <div class="source-chip"><div class="src-dot" style="background:var(--green)"></div><div><div class="src-name">Zerodha</div><div class="src-desc">India broker — equity data, orders, token auto-refresh via GitHub Actions</div></div></div>
     </div>
-    <div style="margin-top:16px;" class="highlight-box">
-      <strong>Zerodha Token Automation:</strong> A dedicated <code>zerodha-token-service</code> Docker container runs Playwright browser automation via GitHub Actions to refresh the Zerodha access token. Token is stored in Redis (<code>plutonal-redis</code>) and consumed by the API. A <code>zerodha-redis-checker</code> validates token presence at startup.
+    <br>
+    <div class="hbox green">
+      <strong>Zerodha Token Automation:</strong> A dedicated <code>zerodha-token-service</code> Docker container runs Playwright browser automation via GitHub Actions to refresh the Zerodha access token daily. Token stored in Redis (<code>plutonal-redis</code>). A <code>zerodha-redis-checker</code> validates token presence at startup.
     </div>
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- INFRASTRUCTURE -->
+<div class="section-wrap">
 <section id="infra">
-  <div class="section-label">Deployment</div>
+  <div class="s-label">Deployment</div>
   <h2>Infrastructure &amp; Services</h2>
-  <p class="section-desc">All services run in Docker on the <code>plutonal-network</code> bridge network. Network: localhost-only bindings for security.</p>
+  <p class="s-desc">All services run in Docker on the <code>plutonal-network</code> bridge network with localhost-only bindings for security.</p>
 
-  <div style="overflow-x:auto;">
+  <div style="overflow-x:auto; margin-bottom:28px;">
     <table class="infra-table">
-      <thead>
-        <tr>
-          <th>Container</th>
-          <th>Image</th>
-          <th>Port</th>
-          <th>Purpose</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Container</th><th>Image</th><th>Port</th><th>Purpose</th></tr></thead>
       <tbody>
         <tr><td>plutonal-api</td><td>build: api</td><td>127.0.0.1:8000</td><td>FastAPI application — primary entry point for all queries</td></tr>
         <tr><td>plutonal-redis</td><td>redis:7.2-alpine</td><td>127.0.0.1:16379</td><td>Main app cache, session storage, Zerodha token, frequency tracking</td></tr>
@@ -2299,302 +882,249 @@
     </table>
   </div>
 
-  <div style="margin-top:24px;">
-    <div class="highlight-box">
-      <strong>Cache Stack (Multi-Layer):</strong>
-      L0 in-memory (hot, sub-millisecond) → L1 Redis (hot data, 30-day TTL) → L2 Pinecone (vector/semantic) → L3 Semantic cache (optional) → L4 PostgreSQL (historical 10+ years).
-      Cache warmer pre-heats S&P 500 / Nifty 50 data daily at market open. Predictive pre-fetch: if user views AAPL, pre-fetch MSFT/GOOGL/AMZN. Target: 80%+ cache hit rate.
-    </div>
+  <div class="hbox">
+    <strong>Multi-Layer Cache Stack:</strong> L0 in-memory (sub-ms, hot) → L1 Redis (30-day TTL) → L2 Pinecone (vector/semantic) → L3 Semantic cache (optional) → L4 PostgreSQL (historical 10+ years). Cache warmer pre-heats S&amp;P 500 / Nifty 50 daily at market open. Predictive pre-fetch: AAPL → pre-fetch MSFT/GOOGL/AMZN. Target: <strong>80%+ cache hit rate</strong>.
   </div>
 
-  <div style="margin-top:16px;">
-    <div class="section-label" style="margin-bottom:12px;">Cache TTL Reference</div>
-    <div class="cache-grid">
-      <div class="cache-item"><div class="cache-key">price:{ticker}:{date}</div><div class="cache-ttl">Until market close (4:30 PM ET)</div><div class="cache-desc">Invalidated by corporate actions (splits)</div></div>
-      <div class="cache-item"><div class="cache-key">fundamentals:{ticker}:{quarter}</div><div class="cache-ttl">Until next earnings report</div><div class="cache-desc">Invalidated by restatements or new filings</div></div>
-      <div class="cache-item"><div class="cache-key">indicators:{ticker}:{date}:{hash}</div><div class="cache-ttl">Until market close</div><div class="cache-desc">Recomputed daily with new OHLCV data</div></div>
-      <div class="cache-item"><div class="cache-key">macro:{series_id}:{date_range}</div><div class="cache-ttl">24 hours</div><div class="cache-desc">Invalidated by FOMC meetings, CPI releases</div></div>
-      <div class="cache-item"><div class="cache-key">13f:{ticker}:{quarter}</div><div class="cache-ttl">Quasi-permanent</div><div class="cache-desc">Until amended filing supersedes original</div></div>
-      <div class="cache-item"><div class="cache-key">news_sentiment:{ticker}:{date}</div><div class="cache-ttl">4 hours</div><div class="cache-desc">Sentiment changes intraday</div></div>
-      <div class="cache-item"><div class="cache-key">screen:{criteria_hash}:{date}</div><div class="cache-ttl">Until market close</div><div class="cache-desc">Refresh daily with new market data</div></div>
-      <div class="cache-item"><div class="cache-key">agent:{agent_name}:{input_hash}</div><div class="cache-ttl">Same as source data TTL</div><div class="cache-desc">Invalidated when underlying data refreshes</div></div>
-    </div>
+  <div class="s-label" style="margin-bottom:14px;">Cache TTL Reference</div>
+  <div class="cache-grid">
+    <div class="cache-item"><div class="cache-key">price:{ticker}:{date}</div><div class="cache-ttl">Until market close (4:30 PM ET)</div><div class="cache-desc">Invalidated by corporate actions (splits)</div></div>
+    <div class="cache-item"><div class="cache-key">fundamentals:{ticker}:{quarter}</div><div class="cache-ttl">Until next earnings date</div><div class="cache-desc">Invalidated by earnings restatements</div></div>
+    <div class="cache-item"><div class="cache-key">indicators:{ticker}:{date}:{hash}</div><div class="cache-ttl">Until market close</div><div class="cache-desc">Recomputed daily from fresh price data</div></div>
+    <div class="cache-item"><div class="cache-key">macro:{series_id}:{date_range}</div><div class="cache-ttl">24 hours</div><div class="cache-desc">Invalidated by FOMC, CPI releases</div></div>
+    <div class="cache-item"><div class="cache-key">13f:{ticker}:{quarter}</div><div class="cache-ttl">Quasi-permanent</div><div class="cache-desc">Invalidated only by amended filings</div></div>
+    <div class="cache-item"><div class="cache-key">news_sentiment:{ticker}:{date}</div><div class="cache-ttl">4 hours</div><div class="cache-desc">Rolling news decay window</div></div>
+    <div class="cache-item"><div class="cache-key">screen:{criteria_hash}:{date}</div><div class="cache-ttl">Until market close</div><div class="cache-desc">Invalidated by new price data</div></div>
+    <div class="cache-item"><div class="cache-key">agent:{agent_name}:{input_hash}</div><div class="cache-ttl">Same as source data TTL</div><div class="cache-desc">Inherits TTL from underlying data sources</div></div>
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- SUPPORTING SYSTEMS -->
-<section id="supporting">
-  <div class="section-label">Advanced Systems</div>
-  <h2>Supporting Intelligence Systems</h2>
-  <p class="section-desc">Four advanced systems run alongside the main pipeline: QPU (cost tracking), RAG (knowledge retrieval), RL (agent weighting), MoE (hyperparameter optimization), and LHIS (multi-horizon planning).</p>
-
+<div class="section-alt">
+<section id="systems">
+  <div class="s-label">Cross-Cutting Concerns</div>
+  <h2>Supporting Systems</h2>
+  <p class="s-desc">Six specialised subsystems that run alongside the main pipeline, providing cost tracking, knowledge retrieval, learning, optimisation, multi-horizon planning, and web access.</p>
   <div class="systems-grid">
-
-    <div class="system-card">
-      <div class="system-icon" style="background:rgba(240,165,0,0.1)">⚡</div>
-      <div class="system-name">QPU</div>
-      <div class="system-sub">Query Processing Unit · core/qpu/</div>
-      <div class="system-desc">Normalized cost unit: 1 QPU ≈ $0.0025 USD. Tracks tokens, API weight, model size, and vector retrieval operations per query. Enforces tier-based daily limits.</div>
-      <ul class="system-points">
-        <li><strong>calculator.py</strong> — QPU = f(tokens, API calls, model, retrieval). Cost = QPU × $0.0025</li>
-        <li><strong>balance_manager.py</strong> — Per-user, per-tier balances; atomic deduction via PostgreSQL</li>
-        <li><strong>middleware.py</strong> — Pre-call balance check; post-call QPU deduction</li>
-        <li><strong>transaction_logger.py</strong> — Full audit trail, cache hit rates, analytics</li>
-        <li><strong>nightly_allocation_job.py</strong> — Daily resets via scheduler (Free / Essentials / Professional / Institutional tiers)</li>
+    <div class="sys-card">
+      <div class="sys-name">QPU</div>
+      <div class="sys-sub">Query Processing Unit</div>
+      <div class="sys-desc">Normalised cost unit: 1 QPU ≈ $0.0025 USD. Tracks tokens, API weight, model size, and vector retrieval per query.</div>
+      <ul class="sys-points">
+        <li>calculator.py: QPU = f(tokens, API calls, model, retrieval)</li>
+        <li>balance_manager.py: Per-user, per-tier atomic deduction via PostgreSQL</li>
+        <li>middleware.py: Pre-call balance check; post-call QPU deduction</li>
+        <li>nightly_allocation_job.py: Daily resets (Free/Essentials/Professional/Institutional)</li>
         <li>API: GET /api/qpu/balance/{user_id}, /transactions, /dashboard</li>
       </ul>
     </div>
-
-    <div class="system-card">
-      <div class="system-icon" style="background:rgba(0,200,255,0.1)">📚</div>
-      <div class="system-name">RAG v2.0</div>
-      <div class="system-sub">Retrieval Augmented Generation · rag/</div>
-      <div class="system-desc">Dynamic retrieval of academic/professional methodologies from ~300-book Pinecone vector store. Augments CRA and agent context with grounded financial research.</div>
-      <ul class="system-points">
-        <li><strong>Adaptive router:</strong> FAST / STANDARD / DEEP by query complexity</li>
-        <li><strong>Multi-query:</strong> LLM generates multiple query variants for broader retrieval</li>
-        <li><strong>HyDE:</strong> Hypothetical document embedding for similarity search (skipped in FAST)</li>
-        <li><strong>Metadata filtering:</strong> asset_class, entities, benchmarks, agent_access</li>
-        <li><strong>Cross-encoder reranking:</strong> LLM scores candidates 0–10; re-sort</li>
-        <li><strong>Iterative confidence:</strong> DEEP mode re-retrieves if quality &lt; 7/10 (max 2 iterations)</li>
-        <li><strong>Parent document expansion:</strong> Expand retrieved chunks to neighbours</li>
-        <li><strong>Ingestion:</strong> PDFs → FinanceAwareChunker → text-embedding-3-large → Pinecone</li>
+    <div class="sys-card">
+      <div class="sys-name">RAG v2.0</div>
+      <div class="sys-sub">Knowledge Retrieval</div>
+      <div class="sys-desc">Dynamic retrieval from ~300-book Pinecone vector store. Adaptive router: FAST / STANDARD / DEEP by query complexity.</div>
+      <ul class="sys-points">
+        <li>Multi-query: LLM generates multiple query variants</li>
+        <li>HyDE: Hypothetical document embedding (skipped in FAST)</li>
+        <li>Cross-encoder reranking: LLM scores 0–10, re-sort</li>
+        <li>Iterative confidence: DEEP mode re-retrieves if quality &lt;7/10 (max 2 iterations)</li>
+        <li>Parent document expansion for neighbouring chunks</li>
       </ul>
     </div>
-
-    <div class="system-card">
-      <div class="system-icon" style="background:rgba(155,122,255,0.1)">🧬</div>
-      <div class="system-name">RL</div>
-      <div class="system-sub">Reinforcement Learning · rl/</div>
-      <div class="system-desc">Trains policies for agent selection, weighting, and multi-horizon behavior. Collects feedback for continuous online learning. Integrated with MoE and LHIS.</div>
-      <ul class="system-points">
-        <li><strong>FinancialAgentEnvironment:</strong> 7 agents, 70-dim state space</li>
-        <li><strong>HierarchicalEnvironment:</strong> Multi-horizon LHIS-compatible</li>
-        <li><strong>RLTrainer:</strong> PPO / A2C / SAC / TD3 via Stable Baselines3; MLflow tracking</li>
-        <li><strong>FeedbackLoop:</strong> Register predictions → collect outcomes → compute rewards → replay buffer</li>
+    <div class="sys-card">
+      <div class="sys-name">RL</div>
+      <div class="sys-sub">Reinforcement Learning</div>
+      <div class="sys-desc">Trains policies for agent selection/weighting and multi-horizon behaviour. FinancialAgentEnvironment: 7 agents, 70-dim state space.</div>
+      <ul class="sys-points">
+        <li>RLTrainer: PPO/A2C/SAC/TD3 via Stable Baselines3</li>
+        <li>MLflow tracking for all training runs</li>
+        <li>FeedbackLoop: Register predictions → collect outcomes → compute rewards → replay buffer</li>
         <li>API: GET /api/v1/performance/rl/stats</li>
       </ul>
     </div>
-
-    <div class="system-card">
-      <div class="system-icon" style="background:rgba(0,232,122,0.1)">🎛️</div>
-      <div class="system-name">MoE</div>
-      <div class="system-sub">Meta-Optimization Engine · moe/optimizer.py</div>
-      <div class="system-desc">Hyperparameter optimization for the multi-agent system using Optuna (TPE). Safe mode with rollback. Optimizes agent weights, confidence thresholds, QPU budgets, cache TTLs.</div>
-      <ul class="system-points">
-        <li><strong>Optimized params:</strong> Agent weights (7 agents, normalized), min/high confidence thresholds, ensemble_method, max_qpu_budget, min/max_agents, freshness_decay_days, cache_ttl_hours</li>
-        <li><strong>Safe mode:</strong> Changes validated before production; automatic rollback on regression</li>
-        <li>API: POST /api/v1/moe/refresh-weights (admin), GET /api/v1/performance/moe/stats</li>
+    <div class="sys-card">
+      <div class="sys-name">MoE</div>
+      <div class="sys-sub">Meta-Optimisation Engine</div>
+      <div class="sys-desc">Hyperparameter optimisation using Optuna TPE. Safe mode with rollback on regression.</div>
+      <ul class="sys-points">
+        <li>Optimised params: agent weights (7 agents, normalised)</li>
+        <li>min/high confidence thresholds, ensemble_method</li>
+        <li>max_qpu_budget, min/max_agents, freshness_decay_days</li>
+        <li>API: POST /api/v1/moe/refresh-weights (admin)</li>
       </ul>
     </div>
-
-    <div class="system-card">
-      <div class="system-icon" style="background:rgba(255,122,61,0.1)">🔭</div>
-      <div class="system-name">LHIS</div>
-      <div class="system-sub">Long-Horizon Intelligence System · lhis/</div>
-      <div class="system-desc">Multi-horizon planning with hierarchical consistency. Three planning horizons operate simultaneously with cross-horizon consistency enforcement.</div>
-      <ul class="system-points">
-        <li><strong>Tactical:</strong> 1-day horizon — intraday/short-term signals</li>
-        <li><strong>Operational:</strong> 1-month horizon — swing/medium-term view</li>
-        <li><strong>Strategic:</strong> 1-year horizon — fundamental/macro view</li>
-        <li><strong>CRA integration:</strong> Optional LHIS planning node in CRA (skipped for SMALL queries)</li>
-        <li>Optional RL models per horizon for adaptive planning</li>
+    <div class="sys-card">
+      <div class="sys-name">LHIS</div>
+      <div class="sys-sub">Long-Horizon Intelligence</div>
+      <div class="sys-desc">Multi-horizon planning: Tactical (1-day) / Operational (1-month) / Strategic (1-year). Hierarchical consistency enforcement across all horizons.</div>
+      <ul class="sys-points">
+        <li>Optional RL models per horizon</li>
+        <li>CRA integration: Optional LHIS planning node (skipped for SMALL queries)</li>
         <li>API: GET /api/v1/performance/lhis/stats</li>
       </ul>
     </div>
-
-    <div class="system-card">
-      <div class="system-icon" style="background:rgba(0,200,255,0.1)">🔍</div>
-      <div class="system-name">Web Manager</div>
-      <div class="system-sub">core/web_manager.py</div>
-      <div class="system-desc">Manages web search (Brave primary, DuckDuckGo fallback), WebSocket real-time connections, and financial news search. Used by check_agent (parallel secondary LLM path) and CRA's parallel_data_fetch node.</div>
-      <ul class="system-points">
-        <li><strong>Search types:</strong> FINANCIAL, NEWS, GENERAL with domain trust ranking</li>
-        <li><strong>SearchCache:</strong> Avoids duplicate web queries within same session</li>
-        <li><strong>WebSocketManager:</strong> Real-time updates via Redis Pub/Sub</li>
+    <div class="sys-card">
+      <div class="sys-name">Web Manager</div>
+      <div class="sys-sub">Real-Time Search &amp; WS</div>
+      <div class="sys-desc">Web search via Brave (primary) / DuckDuckGo (fallback). SearchCache avoids duplicate queries within session. Real-time WebSocket via Redis Pub/Sub.</div>
+      <ul class="sys-points">
+        <li>Used by check_agent (secondary LLM path) and CRA parallel_data_fetch</li>
+        <li>WebSocketManager: real-time streaming updates</li>
         <li>API: WebSocket /api/v1/ws/{client_id}</li>
       </ul>
     </div>
-
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- PATHWAYS -->
+<div class="section-wrap">
 <section id="pathways">
-  <div class="section-label">Decision Trees</div>
-  <h2>Processing Pathways &amp; Loops</h2>
-  <p class="section-desc">Queries take different paths through the pipeline depending on intent, complexity, cache state, and clarification needs.</p>
+  <div class="s-label">Control Flow</div>
+  <h2>9 Processing Pathways</h2>
+  <p class="s-desc">Different query types take different paths through the pipeline. Each pathway is deterministic — the same query type always follows the same path.</p>
 
-  <div class="pathway-grid">
-    <div class="pathway-card">
-      <div class="pathway-name">⚡ Happy Path (Full Pipeline)</div>
-      <div class="pathway-steps">
-        <div class="pstep">Query → L0 Session Gate (proceed)</div>
-        <div class="pstep">L1 Regulatory Gate (PROCEED verdict)</div>
-        <div class="pstep">Decision Router (READY)</div>
-        <div class="pstep">L3 Market Context (build immutable context)</div>
-        <div class="pstep">L2 Query Classification</div>
-        <div class="pstep">L3A Entity Resolution (tickers resolved)</div>
-        <div class="pstep">Cache check (MISS → continue)</div>
-        <div class="pstep">L4 Data Acquisition (parallel fetch)</div>
-        <div class="pstep">L5 Retrieval Confidence scoring</div>
-        <div class="pstep">L6 Quantitative Computation (no LLMs)</div>
-        <div class="pstep">L6.5 Scenario Framing (Bull/Base/Bear)</div>
-        <div class="pstep">L7 CRA + 17 Agents (parallel dispatch)</div>
-        <div class="pstep">L8 Contradiction Engine</div>
-        <div class="pstep">L9 Post-CRA Validation</div>
-        <div class="pstep">L10 Response Composition → JSON</div>
+  <div class="pw-grid">
+    <div class="pw-card">
+      <div class="pw-name">Happy Path (Full Pipeline)</div>
+      <div class="pw-steps">
+        <div class="pw-step">Query → L0 (proceed) → L1 (PROCEED)</div>
+        <div class="pw-step">Router (READY) → L3 Market Context</div>
+        <div class="pw-step">L2 Classification → L3A Entity Resolution</div>
+        <div class="pw-step">Cache MISS → L4 Data → L5 Confidence</div>
+        <div class="pw-step">L6 Computation → L6.5 Scenario</div>
+        <div class="pw-step">L7 CRA + Agents → L8 Contradiction</div>
+        <div class="pw-step">L9 Validation → L10 Response → JSON</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">🚫 Regulatory Block Path</div>
-      <div class="pathway-steps">
-        <div class="pstep">Query → L0 Session Gate</div>
-        <div class="pstep">L1 Regulatory Gate → risk_score 4–5</div>
-        <div class="pstep">Verdict: BLOCK → educational message</div>
-        <div class="pstep">Return immediately (L2–L10 never run)</div>
+    <div class="pw-card">
+      <div class="pw-name">Regulatory Block</div>
+      <div class="pw-steps">
+        <div class="pw-step">Query → L0 → L1 (risk score 4–5, BLOCK)</div>
+        <div class="pw-step">Returns educational message immediately</div>
+        <div class="pw-step">L2–L10 never run</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">🔄 Reframe Path</div>
-      <div class="pathway-steps">
-        <div class="pstep">Query → L0 Session Gate</div>
-        <div class="pstep">L1 Regulatory Gate → risk_score 3</div>
-        <div class="pstep">Verdict: REFRAME → rewrite query</div>
-        <div class="pstep">safe_query = reframed_query</div>
-        <div class="pstep">Pipeline continues with reframed query</div>
-        <div class="pstep">language_constraints enforced at L10</div>
+    <div class="pw-card">
+      <div class="pw-name">Regulatory Reframe</div>
+      <div class="pw-steps">
+        <div class="pw-step">Query → L0 → L1 (risk 3, REFRAME)</div>
+        <div class="pw-step">safe_query = reframed_query</div>
+        <div class="pw-step">Pipeline continues with language_constraints</div>
+        <div class="pw-step">L10 enforces all constraints in final output</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">👋 Greeting / Non-Financial Path</div>
-      <div class="pathway-steps">
-        <div class="pstep">Query → L0 → L1 → Router</div>
-        <div class="pstep">Router → GREETING / TOP_NEWS</div>
-        <div class="pstep">Return: welcome + 5 trending queries</div>
-        <div class="pstep">L2–L10 skipped entirely</div>
-        <div class="pstep">(same for NON_FINANCIAL → redirect)</div>
+    <div class="pw-card">
+      <div class="pw-name">Greeting / Non-Financial</div>
+      <div class="pw-steps">
+        <div class="pw-step">Query → L0 → L1 → Router (GREETING / NON_FINANCIAL)</div>
+        <div class="pw-step">GREETING: dynamic welcome + 5 trending queries</div>
+        <div class="pw-step">NON_FINANCIAL: polite redirect</div>
+        <div class="pw-step">L2–L10 skipped entirely</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">❓ Clarification Loop</div>
-      <div class="pathway-steps">
-        <div class="pstep">Query → Router → NEEDS_CLARIFICATION</div>
-        <div class="pstep">Return clarification questions to user</div>
-        <div class="pstep">User answers → next request (same session_id)</div>
-        <div class="pstep">SessionGate.persist_clarification_batch()</div>
-        <div class="pstep">Prior_clarifications loaded on next evaluate()</div>
-        <div class="pstep">assert_required_clarifications_resolved() before L4</div>
-        <div class="pstep">Pipeline continues when fully resolved</div>
+    <div class="pw-card">
+      <div class="pw-name">Clarification Loop</div>
+      <div class="pw-steps">
+        <div class="pw-step">Router (NEEDS_CLARIFICATION) → return questions</div>
+        <div class="pw-step">User answers → next request (same session_id)</div>
+        <div class="pw-step">SessionGate.persist_clarification_batch()</div>
+        <div class="pw-step">assert_required_clarifications_resolved() at L4</div>
+        <div class="pw-step">Pipeline continues when resolved</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">✅ Cache Hit Path</div>
-      <div class="pathway-steps">
-        <div class="pstep">Query → L0 → L1 → Router → L3 → L2</div>
-        <div class="pstep">L2 post-classification cache check → HIT</div>
-        <div class="pstep">Return cached response immediately</div>
-        <div class="pstep">L4–L10 never run</div>
-        <div class="pstep">QPU deduction for cache hit (discounted)</div>
+    <div class="pw-card">
+      <div class="pw-name">Cache Hit</div>
+      <div class="pw-steps">
+        <div class="pw-step">Query → L0 → L1 → Router → L3 → L2 → cache check</div>
+        <div class="pw-step">HIT → return cached response immediately</div>
+        <div class="pw-step">L4–L10 never run</div>
+        <div class="pw-step">QPU deduction at discounted rate</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">🔀 Compound Query Path</div>
-      <div class="pathway-steps">
-        <div class="pstep">L2 detects COMPOUND + sub_queries[]</div>
-        <div class="pstep">Pipeline run per sub-query (L4–L10 each)</div>
-        <div class="pstep">Results merged at L10</div>
-        <div class="pstep">Single unified response returned</div>
+    <div class="pw-card">
+      <div class="pw-name">Compound Query</div>
+      <div class="pw-steps">
+        <div class="pw-step">L2 detects COMPOUND + sub_queries[]</div>
+        <div class="pw-step">Pipeline run per sub-query (L4–L10 each)</div>
+        <div class="pw-step">Results merged at L10</div>
+        <div class="pw-step">Single unified response returned</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">🔁 Iterative Refinement Loop</div>
-      <div class="pathway-steps">
-        <div class="pstep">VERY_COMPLEX query after first L7 run</div>
-        <div class="pstep">Macro Agent suggests regime split</div>
-        <div class="pstep">Re-run L6 with regime-split parameters</div>
-        <div class="pstep">Re-run L7 with refined computation result</div>
-        <div class="pstep">L8 → L9 → L10 with refined output</div>
+    <div class="pw-card">
+      <div class="pw-name">Iterative Refinement</div>
+      <div class="pw-steps">
+        <div class="pw-step">VERY_COMPLEX query after first L7 run</div>
+        <div class="pw-step">Macro Agent suggests regime split</div>
+        <div class="pw-step">Re-run L6 with regime-split parameters</div>
+        <div class="pw-step">Re-run L7 with refined computation_result</div>
+        <div class="pw-step">L8 → L9 → L10</div>
       </div>
     </div>
-
-    <div class="pathway-card">
-      <div class="pathway-name">🔄 RAG Iterative Path</div>
-      <div class="pathway-steps">
-        <div class="pstep">CRA parallel_data_fetch → RAG DEEP strategy</div>
-        <div class="pstep">Retrieval confidence check: quality &lt; 7/10</div>
-        <div class="pstep">Refine query → re-retrieve from Pinecone</div>
-        <div class="pstep">Max 2 iterations to prevent latency blowup</div>
-        <div class="pstep">Parent document expansion on final results</div>
+    <div class="pw-card">
+      <div class="pw-name">RAG Iterative</div>
+      <div class="pw-steps">
+        <div class="pw-step">CRA parallel_data_fetch → RAG DEEP strategy</div>
+        <div class="pw-step">Retrieval confidence check (quality &lt;7/10)</div>
+        <div class="pw-step">Refine query → re-retrieve from Pinecone</div>
+        <div class="pw-step">Max 2 iterations</div>
+        <div class="pw-step">Parent document expansion on final results</div>
       </div>
     </div>
   </div>
 
-  <div style="margin-top:24px;" class="highlight-box">
-    <strong>Design Boundaries:</strong>
-    Numbers ONLY from computation_engine + API data — LLMs only for classification, synthesis, RAG, task planning, reranking.
-    BLOCK at L1 → immediate return. REFRAME → pipeline continues.
-    Mandatory clarification blocks pipeline at L4 guard (assert_required_clarifications_resolved).
-    Optional ambiguity → proceed with stated defaults.
-    Per-ticker quality gate &lt;0.4 → rejected before computation.
-    Confidence propagated: data → L5 → L7 enriched_context → L9 decomposition → L10 metadata.
-    Pipeline owns L0–L6 and L8–L10. CRA owns ONLY L7.
-    asyncio.Lock(_stats_lock) protects PipelineOrchestrator._stats mutations.
+  <br>
+  <div class="hbox">
+    <strong>Design Boundaries:</strong> Numbers ONLY from computation_engine + API data — LLMs only classify, synthesise, and explain. BLOCK at L1 → immediate return. REFRAME → pipeline continues with reframed_query. Mandatory clarification blocks pipeline at L4 guard. Per-ticker quality gate &lt;0.4 → rejected before computation. Confidence propagated: data → L5 → L7 enriched_context → L9 decomposition → L10 metadata. Pipeline owns L0–L6 and L8–L10. CRA owns ONLY L7. asyncio.Lock(_stats_lock) protects PipelineOrchestrator._stats mutations.
   </div>
 </section>
+</div>
 
 <div class="divider"></div>
 
 <!-- RESPONSE OUTPUT -->
+<div class="section-alt">
 <section id="response">
-  <div class="section-label">Layer 10 · Final Output</div>
-  <h2>Unified JSON Response</h2>
-  <p class="section-desc">Every query — regardless of type — returns the same structured JSON envelope. Frontend uses frontend_hints to determine visualization mode.</p>
+  <div class="s-label">Layer 10 · Unified Output</div>
+  <h2>Response Envelope</h2>
+  <p class="s-desc">Every query — regardless of type or complexity — returns the same structured JSON envelope. Consistent schema enables frontend rendering, download, and analytics.</p>
 
-  <div class="output-card">
-    <div class="output-header">
-      <div class="output-dot" style="background:#ff4d6a"></div>
-      <div class="output-dot" style="background:#f0a500"></div>
-      <div class="output-dot" style="background:#00e87a"></div>
-      <span style="margin-left:8px;">Unified Response Envelope</span>
-      <span style="margin-left:auto;color:var(--green)">application/json</span>
+  <div class="output-window" style="margin-bottom:28px;">
+    <div class="output-bar">
+      <span class="output-bar-dot" style="background:#EF4444"></span>
+      <span class="output-bar-dot" style="background:#F59E0B"></span>
+      <span class="output-bar-dot" style="background:#10B981"></span>
+      <span class="output-bar-title">Unified Response Envelope · application/json · POST /api/v1/query</span>
     </div>
-    <div class="output-body">
-      <div class="output-field"><div class="output-key">response_id</div><div class="output-val">UUID-v4 — unique per query for download/caching</div></div>
-      <div class="output-field"><div class="output-key">status</div><div class="output-val">success | error | clarification_needed</div></div>
-      <div class="output-field"><div class="output-key">executive_summary</div><div class="output-val">CRA synthesis — human-readable answer, institutional tone</div></div>
-      <div class="output-field"><div class="output-key">main_content</div><div class="output-val">Full analysis body, section breakdown, agent findings</div></div>
-      <div class="output-field"><div class="output-key">confidence</div><div class="output-val">{overall, data_quality, agent_agreement, retrieval_confidence} 0.0–1.0</div></div>
-      <div class="output-field"><div class="output-key">contradictions</div><div class="output-val">Array of detected signal contradictions with explanations</div></div>
-      <div class="output-field"><div class="output-key">scenarios</div><div class="output-val">Bull / Base / Bear with probabilities summing to 1.0</div></div>
-      <div class="output-field"><div class="output-key">follow_up_queries</div><div class="output-val">3 contextual suggestions generated by CRA</div></div>
-      <div class="output-field"><div class="output-key">market_context</div><div class="output-val">Market status, major events, earnings season flag</div></div>
-      <div class="output-field"><div class="output-key">disclaimers</div><div class="output-val">[{position: header|inline|footer, type, text, critical, dismissible}]</div></div>
-      <div class="output-field"><div class="output-key">methodology</div><div class="output-val">Statistical methods used, data sources, RAG frameworks</div></div>
-      <div class="output-field"><div class="output-key">time_sensitivity</div><div class="output-val">Validity window, revalidation schedule, freshness note</div></div>
-      <div class="output-field"><div class="output-key">agents_activated</div><div class="output-val">List of agents that ran, with confidence and signal for each</div></div>
-      <div class="output-field"><div class="output-key">metadata.computation</div><div class="output-val">universe_size, data_points, computation_time_ms, cache_hit_rate, api_calls_made</div></div>
-      <div class="output-field"><div class="output-key">metadata.tokens</div><div class="output-val">input_tokens, output_tokens, total_tokens, cost_estimate_usd</div></div>
-      <div class="output-field"><div class="output-key">frontend_hints</div><div class="output-val">primary_visualization, secondary_visualizations, expandable_sections, render_as mode</div></div>
-      <div class="output-field"><div class="output-key">download_options</div><div class="output-val">PDF, Excel, JSON endpoints via /api/download/{format}/{response_id}</div></div>
+    <div class="output-fields" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--border);">
+      <div class="of"><div class="of-key">response_id</div><div class="of-val">UUID-v4 unique identifier for this response</div></div>
+      <div class="of"><div class="of-key">status</div><div class="of-val">success | error | clarification_needed</div></div>
+      <div class="of"><div class="of-key">executive_summary</div><div class="of-val">CRA synthesis in institutional tone — streamed FIRST</div></div>
+      <div class="of"><div class="of-key">main_content</div><div class="of-val">Full analysis with all agent findings</div></div>
+      <div class="of"><div class="of-key">confidence</div><div class="of-val">{overall, data_quality, agent_agreement, retrieval_confidence} 0.0–1.0</div></div>
+      <div class="of"><div class="of-key">contradictions</div><div class="of-val">Array of detected signal contradictions with explanations</div></div>
+      <div class="of"><div class="of-key">scenarios</div><div class="of-val">Bull / Base / Bear probabilities summing to 1.0</div></div>
+      <div class="of"><div class="of-key">follow_up_queries</div><div class="of-val">3 contextual suggestions generated by CRA</div></div>
+      <div class="of"><div class="of-key">market_context</div><div class="of-val">Market status, major events, earnings season flag</div></div>
+      <div class="of"><div class="of-key">disclaimers</div><div class="of-val">[{position: header|inline|footer, type, text, critical, dismissible}]</div></div>
+      <div class="of"><div class="of-key">methodology</div><div class="of-val">Statistical methods used, data sources, RAG frameworks</div></div>
+      <div class="of"><div class="of-key">time_sensitivity</div><div class="of-val">Validity window, revalidation schedule, freshness note</div></div>
+      <div class="of"><div class="of-key">agents_activated</div><div class="of-val">List of agents with confidence and signal for each</div></div>
+      <div class="of"><div class="of-key">metadata.computation</div><div class="of-val">universe_size, data_points, computation_time_ms, cache_hit_rate, api_calls_made</div></div>
+      <div class="of"><div class="of-key">metadata.tokens</div><div class="of-val">input_tokens, output_tokens, total_tokens, cost_estimate_usd</div></div>
+      <div class="of"><div class="of-key">frontend_hints</div><div class="of-val">primary_visualization, secondary_visualizations, render_as mode</div></div>
+      <div class="of"><div class="of-key">download_options</div><div class="of-val">PDF, Excel, JSON via /api/download/{format}/{response_id}</div></div>
     </div>
   </div>
 
-  <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
-    <div class="system-card">
-      <div class="system-name" style="font-size:15px;margin-bottom:8px;">Streaming Strategy</div>
-      <ul class="system-points">
+  <div class="systems-grid">
+    <div class="sys-card">
+      <div class="sys-name" style="font-size:15px;margin-bottom:4px;">Streaming Strategy</div>
+      <ul class="sys-points">
         <li>Stream executive_summary FIRST — answer visible in &lt;3s</li>
         <li>Stream data tables next (progressive rendering)</li>
         <li>Stream detailed analysis last (expandable sections)</li>
@@ -2602,90 +1132,70 @@
         <li>WebSocket: /api/v1/ws/{client_id} for real-time updates</li>
       </ul>
     </div>
-    <div class="system-card">
-      <div class="system-name" style="font-size:15px;margin-bottom:8px;">Response Validation</div>
-      <ul class="system-points">
-        <li>core/response_schemas.py — Pydantic models for each query type</li>
+    <div class="sys-card">
+      <div class="sys-name" style="font-size:15px;margin-bottom:4px;">Response Validation</div>
+      <ul class="sys-points">
+        <li>core/response_schemas.py — Pydantic models per query type</li>
         <li>validate_response_structure() before L10 returns</li>
         <li>Language sanitization pass (GPT-4o Mini)</li>
-        <li>Compliance check: prohibited phrases scan + auto-fix</li>
-        <li>Confidence calibration: ConfidenceCalibrator adjusts language to match scores</li>
+        <li>Compliance: prohibited phrases scan + auto-fix</li>
+        <li>ConfidenceCalibrator adjusts language to match scores</li>
       </ul>
     </div>
-    <div class="system-card">
-      <div class="system-name" style="font-size:15px;margin-bottom:8px;">Analytics Logging</div>
-      <ul class="system-points">
+    <div class="sys-card">
+      <div class="sys-name" style="font-size:15px;margin-bottom:4px;">Analytics Logging</div>
+      <ul class="sys-points">
         <li>Every query logged: query_id, user_id, timestamp, type, complexity</li>
         <li>processing_time_ms, cache_hit, data_quality_score</li>
         <li>agents_used, tokens_used, cost_usd, compliance_passed</li>
-        <li>User feedback (thumbs up/down) for RL reward signal</li>
+        <li>User feedback (thumbs up/down) → RL reward signal</li>
         <li>QPU transaction logged post-response</li>
       </ul>
     </div>
   </div>
 </section>
-
-<div class="divider"></div>
+</div>
 
 <!-- FOOTER -->
 <footer>
-  <div style="margin-bottom:8px;color:var(--gold);font-size:13px;font-family:var(--font-head);font-weight:700;">PLUTONAL AI · COMPLETE SYSTEM WORKFLOW</div>
-  Architecture v9.4 · Canonical 11-Layer Pipeline · CRA v7.0 · RAG v2.0 · 17 Specialist Agents · 21 External APIs
-  <div style="margin-top:8px;">
+  <strong>PLUTONAL AI · COMPLETE SYSTEM WORKFLOW</strong>
+  Architecture v9.4 · Canonical 11-Layer Pipeline · CRA v7.0 · RAG v2.0 · 17 Specialist Agents · 21 External APIs · 8 Computation Engines
+  <div class="ft-sub">
     Source: core/pipeline_orchestrator.py · agents/cra/orchestrator.py · PIPELINE_ARCHITECTURE.md · PLUTONAL_V3_WORKFLOW.md
   </div>
 </footer>
 
 <script>
-// Toggle layer details
-function toggleLayer(el) {
-  const details = el.querySelector('.layer-details');
-  const btn = el.querySelector('.expand-btn');
-  if (details) {
-    const isOpen = details.classList.toggle('open');
-    if (btn) btn.textContent = isOpen ? '▾ collapse' : '▸ expand details';
-  }
+function toggleLayer(btn) {
+  const card = btn.closest('.pl-card');
+  const details = card.querySelector('.pl-details');
+  const isOpen = details.classList.toggle('open');
+  card.classList.toggle('open', isOpen);
+  btn.textContent = isOpen ? '▾ Collapse' : '▸ Expand details';
 }
 
-// Tab switching
 function switchTab(tabEl, panelId) {
-  const tabContainer = tabEl.parentElement;
-  tabContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const parent = tabEl.closest('section');
+  parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   tabEl.classList.add('active');
-
-  const section = tabContainer.nextElementSibling;
-  // Find all panels in the vicinity
-  let el = tabContainer.nextElementSibling;
-  while (el && (el.classList.contains('tab-panel') || el.tagName !== 'DIV')) {
-    if (el.classList.contains('tab-panel')) {
-      el.classList.toggle('active', el.id === panelId);
-    }
-    el = el.nextElementSibling;
-  }
-
-  // Also search within parent
-  const parent = tabContainer.parentElement;
   parent.querySelectorAll('.tab-panel').forEach(p => {
     p.classList.toggle('active', p.id === panelId);
   });
 }
 
-// Highlight nav link on scroll
-const sections = document.querySelectorAll('section, .hero');
+// Nav active state on scroll
 const navLinks = document.querySelectorAll('.nav-links a');
-
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const id = entry.target.id;
+const sections = document.querySelectorAll('section[id]');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
       navLinks.forEach(a => {
-        a.style.color = a.getAttribute('href') === '#' + id ? 'var(--gold)' : '';
+        a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
       });
     }
   });
-}, { threshold: 0.2 });
-
-sections.forEach(s => s.id && observer.observe(s));
+}, { threshold: 0.25 });
+sections.forEach(s => io.observe(s));
 </script>
 </body>
 </html>
